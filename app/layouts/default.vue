@@ -626,7 +626,7 @@ async function submitNewBatch() {
 @media (max-width: 800px) {
   .shell { flex-direction: column; }
   .sidebar { display: none; }
-  .content { padding: 16px 16px 72px; }
+  .content { padding: 16px 16px calc(72px + env(safe-area-inset-bottom)); }
   /* Bottom nav bar appears via .mobile-nav injected below */
 }
 
