@@ -196,6 +196,123 @@
       </Transition>
     </Teleport>
 
+    <!-- Mobile bottom nav -->
+    <nav class="mobile-nav" aria-label="Main navigation">
+      <NuxtLink to="/dashboard" class="mobile-nav-item" active-class="mobile-nav-item--active">
+        <span class="mobile-nav-badge nav-badge--blue">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+            <rect x="1" y="1" width="5" height="5" rx="1.2" fill="currentColor"/>
+            <rect x="8" y="1" width="5" height="5" rx="1.2" fill="currentColor"/>
+            <rect x="1" y="8" width="5" height="5" rx="1.2" fill="currentColor"/>
+            <rect x="8" y="8" width="5" height="5" rx="1.2" fill="currentColor"/>
+          </svg>
+        </span>
+        Overview
+      </NuxtLink>
+      <NuxtLink to="/log" class="mobile-nav-item" active-class="mobile-nav-item--active">
+        <span class="mobile-nav-badge nav-badge--purple">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+            <path d="M2.5 3.5h9M2.5 7h6.5M2.5 10.5h4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Log
+      </NuxtLink>
+      <button class="mobile-nav-item mobile-nav-item--new" @click="newBatchOpen = true">
+        <span class="mobile-nav-badge nav-badge--green">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+            <path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        New batch
+      </button>
+      <NuxtLink to="/inventory" class="mobile-nav-item" active-class="mobile-nav-item--active">
+        <span class="mobile-nav-badge nav-badge--amber">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+            <rect x="2" y="5" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M2 7.5h10M5 5V4a2 2 0 014 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Inventory
+      </NuxtLink>
+      <button class="mobile-nav-item" :class="{ 'mobile-nav-item--active': mobileMenuOpen }" @click="mobileMenuOpen = true">
+        <span class="mobile-nav-badge mobile-nav-badge--more">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+            <circle cx="3" cy="7" r="1.2" fill="currentColor"/>
+            <circle cx="7" cy="7" r="1.2" fill="currentColor"/>
+            <circle cx="11" cy="7" r="1.2" fill="currentColor"/>
+          </svg>
+        </span>
+        More
+      </button>
+    </nav>
+
+    <!-- Mobile "More" menu -->
+    <Teleport to="body">
+      <Transition name="mobile-menu">
+        <div v-if="mobileMenuOpen" class="mobile-menu-overlay" @click.self="mobileMenuOpen = false">
+          <div class="mobile-menu-sheet">
+            <div class="mobile-menu-handle" />
+            <div class="mobile-menu-header">
+              <span class="mobile-menu-title">Menu</span>
+              <button class="mobile-menu-close" @click="mobileMenuOpen = false" aria-label="Close menu">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M1.5 1.5l11 11M12.5 1.5l-11 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </div>
+            <nav class="mobile-menu-nav">
+              <NuxtLink to="/dashboard" class="mobile-menu-item" active-class="mobile-menu-item--active" @click="mobileMenuOpen = false">
+                <span class="nav-badge nav-badge--blue"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1.2" fill="currentColor"/><rect x="8" y="1" width="5" height="5" rx="1.2" fill="currentColor"/><rect x="1" y="8" width="5" height="5" rx="1.2" fill="currentColor"/><rect x="8" y="8" width="5" height="5" rx="1.2" fill="currentColor"/></svg></span>
+                Overview
+              </NuxtLink>
+              <NuxtLink to="/log" class="mobile-menu-item" active-class="mobile-menu-item--active" @click="mobileMenuOpen = false">
+                <span class="nav-badge nav-badge--purple"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 3.5h9M2.5 7h6.5M2.5 10.5h4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                Log
+              </NuxtLink>
+              <NuxtLink to="/inventory" class="mobile-menu-item" active-class="mobile-menu-item--active" @click="mobileMenuOpen = false">
+                <span class="nav-badge nav-badge--amber"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="5" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 7.5h10M5 5V4a2 2 0 014 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+                Inventory
+              </NuxtLink>
+              <NuxtLink to="/duty" class="mobile-menu-item" active-class="mobile-menu-item--active" @click="mobileMenuOpen = false">
+                <span class="nav-badge nav-badge--red"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="3.5" width="10" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 3.5V3a2 2 0 014 0v.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4.5 8l1.5 1.5 3-3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                Duty
+              </NuxtLink>
+              <NuxtLink to="/intake" class="mobile-menu-item" active-class="mobile-menu-item--active" @click="mobileMenuOpen = false">
+                <span class="nav-badge nav-badge--orange"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="5" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M4.5 5V4a2.5 2.5 0 015 0v1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                Ingredients
+              </NuxtLink>
+              <NuxtLink to="/products" class="mobile-menu-item" active-class="mobile-menu-item--active" @click="mobileMenuOpen = false">
+                <span class="nav-badge nav-badge--teal"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5C4.5 1.5 2.5 3.5 2.5 6c0 1.5.7 2.8 1.8 3.7L7 12.5l2.7-2.8A4.5 4.5 0 0011.5 6C11.5 3.5 9.5 1.5 7 1.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><circle cx="7" cy="6" r="1.5" fill="currentColor"/></svg></span>
+                Products
+              </NuxtLink>
+              <NuxtLink to="/sales" class="mobile-menu-item" active-class="mobile-menu-item--active" @click="mobileMenuOpen = false">
+                <span class="nav-badge nav-badge--indigo"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="4" width="11" height="8.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 4V3.5a2.5 2.5 0 015 0V4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4.5 7.5h5M4.5 9.5h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+                Sales
+              </NuxtLink>
+              <NuxtLink to="/customers" class="mobile-menu-item" active-class="mobile-menu-item--active" @click="mobileMenuOpen = false">
+                <span class="nav-badge nav-badge--pink"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 12c0-3.3 5-3.3 5-3.3s5 0 5 3.3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+                Customers
+              </NuxtLink>
+              <div class="mobile-menu-divider" />
+              <button class="mobile-menu-item" @click="newBatchOpen = true; mobileMenuOpen = false">
+                <span class="nav-badge nav-badge--green"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+                New batch
+              </button>
+              <div class="mobile-menu-divider" />
+              <button class="mobile-menu-user" @click="authStore.logout()">
+                <div class="user-avatar">KF</div>
+                <div class="user-info">
+                  <div class="user-name">{{ displayName }}</div>
+                  <div class="user-sub">Sign out</div>
+                </div>
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" class="signout-icon"><path d="M4.5 2H3A1.5 1.5 0 001.5 3.5v6A1.5 1.5 0 003 11h1.5M8.5 9.5L12 6.5 8.5 3.5M12 6.5H4.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </nav>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
     <!-- Main content -->
     <main class="content">
       <slot />
@@ -227,6 +344,11 @@ const displayName = computed(() => {
   if (!u) return 'Operator'
   return u.displayName || u.email?.split('@')[0] || 'Operator'
 })
+
+// ── Mobile menu ───────────────────────────────────────────
+const mobileMenuOpen = ref(false)
+const route = useRoute()
+watch(() => route.path, () => { mobileMenuOpen.value = false })
 
 // ── New batch drawer ──────────────────────────────────────
 const { batches: activeBatches } = useActiveBatches()
@@ -494,9 +616,155 @@ async function submitNewBatch() {
   .toast-enter-active, .toast-leave-active { transition: none; }
 }
 
+/* ── Tablet ───────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .sidebar { width: 220px; padding: 16px 10px 14px; }
+  .content { padding: 28px 28px 64px; }
+}
+
+/* ── Mobile ───────────────────────────────────────── */
 @media (max-width: 800px) {
+  .shell { flex-direction: column; }
   .sidebar { display: none; }
-  .content { padding: 20px 20px 56px; }
+  .content { padding: 16px 16px 72px; }
+  /* Bottom nav bar appears via .mobile-nav injected below */
+}
+
+/* ── Mobile nav bar ──────────────────────────────── */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(0,0,0,0.08);
+  padding: 8px 4px max(8px, env(safe-area-inset-bottom));
+  gap: 0;
+}
+@media (max-width: 800px) {
+  .mobile-nav { display: flex; align-items: flex-end; justify-content: space-around; }
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+  font-size: 0.58rem;
+  font-weight: 500;
+  color: var(--text-quarternary);
+  letter-spacing: -0.01em;
+  transition: color var(--t-fast);
+  text-decoration: none;
+  min-width: 52px;
+}
+.mobile-nav-item--active,
+.mobile-nav-item.router-link-active { color: var(--accent-deep); }
+
+.mobile-nav-badge {
+  width: 26px; height: 26px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+}
+.mobile-nav-badge--more {
+  background: var(--surface-3);
+  color: var(--text-secondary);
+  box-shadow: none;
+  border: 1px solid var(--separator);
+}
+.mobile-nav-item--active .mobile-nav-badge--more,
+.mobile-nav-item--new .mobile-nav-badge { box-shadow: 0 2px 8px rgba(40,168,82,0.35); }
+
+/* ── Mobile "More" menu sheet ────────────────────── */
+.mobile-menu-overlay {
+  position: fixed; inset: 0; z-index: 1100;
+  background: rgba(0,0,0,0.30);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: flex-end;
+}
+.mobile-menu-sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 32px rgba(0,0,0,0.14);
+  display: flex; flex-direction: column;
+}
+.mobile-menu-handle {
+  width: 36px; height: 4px; border-radius: 99px;
+  background: var(--separator);
+  align-self: center; margin: 10px 0 4px;
+  flex-shrink: 0;
+}
+.mobile-menu-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 20px 12px;
+  border-bottom: 1px solid var(--separator-2);
+  flex-shrink: 0;
+}
+.mobile-menu-title {
+  font-size: 0.84rem; font-weight: 700;
+  letter-spacing: -0.02em; color: var(--text-primary);
+}
+.mobile-menu-close {
+  width: 28px; height: 28px; border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-quarternary);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.mobile-menu-close:hover { background: var(--surface-3); color: var(--text-primary); }
+
+.mobile-menu-nav {
+  padding: 8px 12px;
+  display: flex; flex-direction: column; gap: 2px;
+  overflow-y: auto;
+}
+.mobile-menu-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 10px;
+  border-radius: var(--r-sm);
+  font-size: 0.92rem; font-weight: 400;
+  color: var(--text-secondary);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition: background var(--t-fast), color var(--t-fast);
+  width: 100%; text-align: left;
+}
+.mobile-menu-item:hover { background: rgba(0,0,0,0.04); color: var(--text-primary); }
+.mobile-menu-item--active { background: rgba(0,0,0,0.05); color: var(--text-primary); font-weight: 600; }
+
+.mobile-menu-divider {
+  height: 1px; background: var(--separator-2);
+  margin: 6px 0;
+}
+
+.mobile-menu-user {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 10px;
+  border-radius: var(--r-sm);
+  width: 100%; text-align: left;
+  transition: background var(--t-fast);
+}
+.mobile-menu-user:hover { background: rgba(0,0,0,0.04); }
+
+.mobile-menu-enter-active { transition: opacity 200ms var(--ease); }
+.mobile-menu-leave-active { transition: opacity 160ms var(--ease); }
+.mobile-menu-enter-from, .mobile-menu-leave-to { opacity: 0; }
+.mobile-menu-enter-active .mobile-menu-sheet { transition: transform 260ms var(--ease-spring); }
+.mobile-menu-leave-active .mobile-menu-sheet { transition: transform 180ms var(--ease); }
+.mobile-menu-enter-from .mobile-menu-sheet,
+.mobile-menu-leave-to .mobile-menu-sheet { transform: translateY(100%); }
+
+/* Toast tweaks on mobile */
+@media (max-width: 800px) {
+  .toasts { top: 12px; width: calc(100vw - 32px); left: 16px; right: 16px; transform: none; }
+  .toast { white-space: normal; font-size: 0.84rem; }
 }
 
 /* ── New batch drawer ─────────────────────────────── */
@@ -535,4 +803,12 @@ async function submitNewBatch() {
   display: flex; gap: 10px; justify-content: flex-end; flex-shrink: 0;
 }
 .nav-item.disabled { opacity: 0.45; pointer-events: none; }
+
+@media (max-width: 800px) {
+  .overlay { align-items: flex-end; justify-content: stretch; }
+  .form-panel { width: 100%; max-width: 100%; height: auto; max-height: 90vh; border-radius: 20px 20px 0 0; }
+  .panel-enter-from, .panel-leave-to { transform: translateY(100%); }
+  .panel-enter-active { transition: transform 260ms var(--ease-spring); }
+  .panel-leave-active { transition: transform 200ms var(--ease); }
+}
 </style>

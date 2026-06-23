@@ -667,6 +667,37 @@ function orderTotal(order: Order): string {
 }
 .btn-dispatch:hover { box-shadow: 0 3px 9px rgba(28,126,240,0.32); transform: translateY(-1px); }
 
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 800px) {
+  .summary-strip { min-width: 100%; }
+  .summary-stat { padding: 12px 16px; flex: 1; }
+  .summary-val { font-size: 1.3rem; }
+
+  .order-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 14px 16px;
+  }
+
+  /* Prevent mono ref from breaking mid-character */
+  .order-ref { word-break: keep-all; white-space: nowrap; }
+
+  .order-row-right {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: space-between;
+  }
+
+  /* Total + date sit together on the left, actions on the right */
+  .order-total { font-size: 1rem; }
+
+  .order-actions { margin-left: auto; }
+
+  /* Make buttons full-row on very small screens */
+  .btn-dispatch, .btn-invoice { padding: 8px 14px; font-size: 0.78rem; }
+}
+
 /* Empty */
 .empty-state {
   display: flex; flex-direction: column; align-items: center;
@@ -695,6 +726,13 @@ function orderTotal(order: Order): string {
 .panel-enter-active { transition: transform 240ms var(--ease-spring); }
 .panel-leave-active { transition: transform 180ms var(--ease); }
 .panel-enter-from, .panel-leave-to { transform: translateX(100%); }
+@media (max-width: 800px) {
+  .overlay { align-items: flex-end; justify-content: stretch; }
+  .form-panel { width: 100%; max-width: 100%; height: auto; max-height: 92vh; border-radius: 20px 20px 0 0; }
+  .panel-enter-from, .panel-leave-to { transform: translateY(100%); }
+  .panel-enter-active { transition: transform 260ms var(--ease-spring); }
+  .panel-leave-active { transition: transform 200ms var(--ease); }
+}
 
 .panel-header {
   display: flex; align-items: center; justify-content: space-between;

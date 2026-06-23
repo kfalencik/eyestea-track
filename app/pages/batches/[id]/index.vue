@@ -2848,4 +2848,15 @@ function formatStageDate(key: string): string {
 }
 .btn-discard-confirm:hover:not(:disabled) { box-shadow: 0 3px 10px rgba(229,57,53,0.35); }
 .btn-discard-confirm:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 800px) {
+  .stage-layout { gap: 16px; }
+
+  /* Help panel becomes a collapsible below the runner on mobile */
+  .help-panel { padding: 14px 16px; }
+
+  /* Stage runner cards */
+  .phase-group { border-radius: var(--r-md); }
+}
 </style>

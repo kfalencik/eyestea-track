@@ -246,6 +246,69 @@ function formatDate(ts: Timestamp | null | undefined): string {
 .inv-remaining--positive { font-weight: 700; color: #1A6B38; }
 .inv-remaining--zero { color: var(--text-placeholder); }
 
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .inv-grid {
+    grid-template-columns: 1.4fr 1.1fr 0.6fr 0.8fr 0.7fr 0.7fr 0.7fr 0.7fr 0.5fr 0.8fr;
+  }
+  .inv-header, .inv-row { padding-left: 14px; padding-right: 14px; }
+}
+
+@media (max-width: 800px) {
+  .summary-strip { min-width: 100%; }
+  .summary-stat { padding: 12px 14px; flex: 1; }
+  .summary-val { font-size: 1.3rem; }
+
+  /* Switch to card-style rows: hide desktop header, show label/value pairs */
+  .inv-header { display: none; }
+
+  .inv-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 12px;
+    padding: 14px 16px;
+    align-items: start;
+  }
+
+  /* Product spans full width as the card title */
+  .inv-product {
+    grid-column: 1 / -1;
+    font-size: 0.92rem;
+    font-weight: 700;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--separator-2);
+    margin-bottom: 2px;
+  }
+
+  /* Each data cell gets a label above it via ::before */
+  .inv-row span:not(.inv-product) {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .inv-row span:not(.inv-product)::before {
+    font-size: 0.58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-quarternary);
+  }
+
+  /* Assign label text to each column position via nth-child */
+  /* Order in DOM: inv-product(1), inv-mono batchId(2), inv-size(3),
+     inv-date canDate(4), inv-num produced(5), inv-num dispatched(6),
+     inv-num onOrder(7), inv-num remaining(8), inv-num abv(9), inv-date bestBefore(10) */
+  .inv-row span:nth-child(2)::before { content: 'Batch ID'; }
+  .inv-row span:nth-child(3)::before { content: 'Size'; }
+  .inv-row span:nth-child(4)::before { content: 'Canned'; }
+  .inv-row span:nth-child(5)::before { content: 'Produced'; }
+  .inv-row span:nth-child(6)::before { content: 'Dispatched'; }
+  .inv-row span:nth-child(7)::before { content: 'On order'; }
+  .inv-row span:nth-child(8)::before { content: 'Remaining'; }
+  .inv-row span:nth-child(9)::before { content: 'ABV'; }
+  .inv-row span:nth-child(10)::before { content: 'Best before'; }
+}
+
 /* Empty */
 .empty-state {
   display: flex; flex-direction: column; align-items: center;

@@ -669,9 +669,16 @@ function catLabel(cat: string): string { return CAT_LABELS[cat] ?? cat }
 .panel-body { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:18px; }
 .panel-footer { padding:16px 24px; border-top:1px solid var(--separator-2); display:flex; gap:10px; justify-content:flex-end; flex-shrink:0; }
 .field-hint { font-size:0.72rem; color:var(--text-quarternary); margin-top:-4px; }
-.overlay-enter-active,.overlay-leave-active { transition:opacity 180ms var(--ease,ease); }
+.overlay-enter-active,.overlay-leave-active { transition:opacity 180ms var(--ease); }
 .overlay-enter-from,.overlay-leave-to { opacity:0; }
 .panel-enter-active { transition:transform 240ms var(--ease-spring); }
-.panel-leave-active { transition:transform 180ms ease-in; }
+.panel-leave-active { transition:transform 180ms var(--ease); }
 .panel-enter-from,.panel-leave-to { transform:translateX(100%); }
+@media (max-width: 800px) {
+  .overlay { align-items: flex-end; justify-content: stretch; }
+  .form-panel { width: 100%; max-width: 100%; height: auto; max-height: 92vh; border-radius: 20px 20px 0 0; }
+  .panel-enter-from,.panel-leave-to { transform: translateY(100%); }
+  .panel-enter-active { transition: transform 260ms var(--ease-spring); }
+  .panel-leave-active { transition: transform 200ms var(--ease); }
+}
 </style>

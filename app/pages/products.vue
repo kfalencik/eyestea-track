@@ -474,6 +474,13 @@ async function doDelete() {
 .panel-enter-active { transition: transform 240ms var(--ease-spring); }
 .panel-leave-active { transition: transform 180ms var(--ease); }
 .panel-enter-from, .panel-leave-to { transform: translateX(100%); }
+@media (max-width: 800px) {
+  .overlay { align-items: flex-end; justify-content: stretch; }
+  .form-panel { width: 100%; max-width: 100%; height: auto; max-height: 92vh; border-radius: 20px 20px 0 0; }
+  .panel-enter-from, .panel-leave-to { transform: translateY(100%); }
+  .panel-enter-active { transition: transform 260ms var(--ease-spring); }
+  .panel-leave-active { transition: transform 200ms var(--ease); }
+}
 
 .panel-header {
   display: flex; align-items: center; justify-content: space-between;

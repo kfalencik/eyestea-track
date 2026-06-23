@@ -229,6 +229,29 @@ function formatDate(ts: Timestamp | null | undefined): string {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 480px;
 }
 
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 800px) {
+  .log-row { flex-wrap: wrap; gap: 10px; padding: 12px 14px; }
+  .log-row-left { width: auto; flex: 1 1 100%; }
+  .log-row-mid {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    gap: 0;
+    border-top: 1px solid var(--separator-2);
+    padding-top: 8px;
+  }
+  .log-stat {
+    flex: 1 1 calc(33.33% - 1px);
+    padding: 6px 10px;
+    border-right: 1px solid var(--separator-2);
+    border-bottom: 1px solid var(--separator-2);
+  }
+  .log-stat:nth-child(3n) { border-right: none; }
+  .log-stat:nth-last-child(-n+3) { border-bottom: none; }
+  .log-row-right { flex: 1 1 100%; justify-content: space-between; }
+  .log-discarded-reason { padding: 8px 0 0; flex: 1 1 100%; }
+}
+
 /* Empty state */
 .empty-state {
   display: flex; flex-direction: column; align-items: center;

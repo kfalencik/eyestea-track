@@ -892,6 +892,26 @@ async function submitNewBatch() {
 .overlay-enter-active,.overlay-leave-active { transition:opacity 180ms var(--ease); }
 .overlay-enter-from,.overlay-leave-to { opacity:0; }
 .panel-enter-active { transition:transform 240ms var(--ease-spring); }
-.panel-leave-active { transition:transform 180ms ease-in; }
+.panel-leave-active { transition:transform 180ms var(--ease); }
 .panel-enter-from,.panel-leave-to { transform:translateX(100%); }
+
+/* ── Responsive ────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .body-grid { grid-template-columns: 1fr 280px; gap: 16px; }
+  .kpi { padding: 14px 18px; }
+}
+
+@media (max-width: 800px) {
+  .kpi-strip { flex-wrap: wrap; }
+  .kpi { padding: 14px 16px; flex: 1 1 calc(33.33% - 2px); }
+  .kpi-sep { display: none; }
+  .kpi-val { font-size: 1.5rem; }
+
+  .body-grid { grid-template-columns: 1fr; gap: 20px; }
+  .col-side { order: -1; }
+
+  .overlay { align-items: flex-end; justify-content: stretch; }
+  .form-panel { width: 100%; max-width: 100%; height: auto; max-height: 90vh; border-radius: 20px 20px 0 0; }
+  .panel-enter-from,.panel-leave-to { transform: translateY(100%); }
+}
 </style>
