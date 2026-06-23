@@ -1,0 +1,115 @@
+:root {
+  /* ── Surfaces ────────────────────────────────────── */
+  --bg:            #F2F2F7;   /* iOS system background                   */
+  --surface:       #FFFFFF;
+  --surface-2:     rgba(118,118,128,0.08);
+  --surface-3:     rgba(118,118,128,0.14);
+  --surface-glass: rgba(255,255,255,0.80);
+
+  /* ── Text ────────────────────────────────────────── */
+  --text-primary:     #1C1C1E;
+  --text-secondary:   #3C3C43;
+  --text-tertiary:    #3C3C43;
+  --text-quarternary: #8E8E93;
+  --text-placeholder: #C7C7CC;
+
+  /* ── Accent — EyesTea green ──────────────────────── */
+  --accent:        #30A85A;
+  --accent-mid:    #28974E;
+  --accent-deep:   #1A6B38;
+  --accent-tint:   rgba(48,168,90,0.10);
+  --accent-tint-2: rgba(48,168,90,0.05);
+  --accent-glow:   0 0 20px rgba(48,168,90,0.20);
+
+  /* ── Amber ───────────────────────────────────────── */
+  --amber:         #FF9F0A;
+  --amber-tint:    rgba(255,159,10,0.12);
+
+  /* ── Danger ──────────────────────────────────────── */
+  --red:           #FF3B30;
+  --red-tint:      rgba(255,59,48,0.10);
+
+  /* ── Separator ───────────────────────────────────── */
+  --separator:     rgba(60,60,67,0.12);
+  --separator-2:   rgba(60,60,67,0.06);
+
+  /* ── Rail ────────────────────────────────────────── */
+  --rail-bg:            #1C1C1E;
+  --rail-text:          rgba(255,255,255,0.88);
+  --rail-muted:         rgba(255,255,255,0.32);
+  --rail-active:        rgba(48,168,90,0.16);
+  --rail-active-text:   #4CD97B;
+  --rail-hover:         rgba(255,255,255,0.06);
+  --rail-border:        rgba(255,255,255,0.06);
+
+  /* ── Typography ──────────────────────────────────── */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display',
+               'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', 'DM Mono', 'Fira Code', ui-monospace, monospace;
+
+  /* ── Radius ──────────────────────────────────────── */
+  --r-xs:  6px;
+  --r-sm:  10px;
+  --r-md:  14px;
+  --r-lg:  20px;
+  --r-xl:  28px;
+  --r-2xl: 40px;
+
+  /* ── Shadow ──────────────────────────────────────── */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 28px rgba(0,0,0,0.09), 0 2px 6px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.11), 0 8px 16px rgba(0,0,0,0.06);
+
+  /* ── Transitions ─────────────────────────────────── */
+  --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out:    cubic-bezier(0, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --t-fast:      100ms;
+  --t-base:      180ms;
+  --t-slow:      300ms;
+
+  /* ── Legacy compat ───────────────────────────────── */
+  --ground:        var(--bg);
+  --ground-raised: var(--surface);
+  --ground-light:  var(--surface);
+  --ground-high:   var(--surface-2);
+  --ground-deep:   var(--surface-2);
+  --ground-mid:    var(--surface-3);
+  --text:          var(--text-primary);
+  --text-muted:    var(--text-quarternary);
+  --text-faint:    var(--text-placeholder);
+  --border:        var(--separator-2);
+  --border-mid:    var(--separator);
+  --border-strong: rgba(60,60,67,0.22);
+  --accent-light:  var(--accent-tint);
+  --accent-dim:    var(--accent-tint);
+  --accent-dark:   var(--accent-deep);
+  --accent-bg:     var(--accent-tint);
+  --warn:          var(--red);
+  --warn-light:    var(--red-tint);
+  --warn-bg:       var(--red-tint);
+  --warn-dim:      var(--red-tint);
+  --warn-dark:     #CC2F26;
+  --amber-light:   var(--amber-tint);
+  --amber-dim:     var(--amber-tint);
+  --danger:        var(--red);
+  --danger-light:  var(--red-tint);
+  --danger-dim:    var(--red-tint);
+  --radius:        var(--r-sm);
+  --radius-sm:     var(--r-xs);
+  --radius-lg:     var(--r-lg);
+  --radius-xl:     var(--r-xl);
+  --transition:    var(--t-base) var(--ease);
+  --transition-slow: var(--t-slow) var(--ease);
+  --shadow:        var(--shadow-md);
+  --font-body:     var(--font-sans);
+  --font-body-alt: var(--font-sans);
+  --sidebar-bg:    var(--rail-bg);
+  --sidebar-text:  var(--rail-text);
+  --sidebar-muted: var(--rail-muted);
+  --sidebar-hover: var(--rail-hover);
+  --sidebar-active-bg:   var(--rail-active);
+  --sidebar-active-text: var(--rail-active-text);
+}

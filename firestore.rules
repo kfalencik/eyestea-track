@@ -1,0 +1,38 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Only authenticated users from the EyesTea organisation can read or write anything
+    function isAuthed() {
+      return request.auth != null;
+    }
+
+    // Raw material intake — any authenticated user can read/write
+    match /intake/{docId} {
+      allow read, write: if isAuthed();
+    }
+
+    // Batches and all subcollections
+    match /batches/{batchId} {
+      allow read, write: if isAuthed();
+
+      match /readings/{readingId} {
+        allow read, write: if isAuthed();
+      }
+
+      match /ccpLogs/{logId} {
+        allow read, write: if isAuthed();
+      }
+
+      match /correctiveActions/{caId} {
+        allow read, write: if isAuthed();
+      }
+    }
+
+    // Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
