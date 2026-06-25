@@ -527,16 +527,14 @@
                   <div v-if="fermentStable" class="stability-alert--ok">
                     SG stable over ≥48 h — fermentation likely complete. Ready to transfer.
                   </div>
-                  <div class="panel-actions" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
-                    <div style="display:flex;gap:8px;flex-wrap:wrap">
-                      <button type="button" class="btn-submit" @click="logPanelOpen = true">+ Log reading</button>
-                      <button type="button" class="btn-add-ingredient" @click="fermentAddOpen = true">+ Add ingredient</button>
-                    </div>
-                    <button type="button" class="btn-cancel" @click="saveStageClick(stage)">
-                      <template v-if="saving === stage.key">Saving…</template>
-                      <template v-else>Mark complete <svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="vertical-align:-1px"><path d="M2 5.5h7M6 3l2.5 2.5L6 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></template>
-                    </button>
-                  </div>
+                </div>
+                <div class="ferment-actions">
+                  <button type="button" class="btn-submit" @click="logPanelOpen = true">+ Log reading</button>
+                  <button type="button" class="btn-add-ingredient" @click="fermentAddOpen = true">+ Add ingredient</button>
+                  <button type="button" class="btn-mark-complete" @click="saveStageClick(stage)">
+                    <template v-if="saving === stage.key">Saving…</template>
+                    <template v-else>Mark complete <svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="vertical-align:-1px"><path d="M2 5.5h7M6 3l2.5 2.5L6 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></template>
+                  </button>
                 </div>
               </template>
 
@@ -2566,7 +2564,7 @@ function formatStageDate(key: string): string {
 .stage-runner-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 @media (max-width: 860px) {
   .stage-layout { grid-template-columns: 1fr; }
-  .help-panel { order: -1; position: static; }
+  .help-panel { display: none; }
 }
 
 /* ── Phase grouping wrapper ── */
@@ -2739,6 +2737,7 @@ function formatStageDate(key: string): string {
 }
 
 .panel-body { padding: 20px 20px 22px; display: flex; flex-direction: column; gap: 14px; }
+.panel-body > .btn-submit { align-self: flex-start; }
 .panel-lead { font-size: 0.83rem; color: var(--text-secondary); line-height: 1.55; margin: 0; }
 .panel-empty { font-size: 0.82rem; color: var(--text-tertiary); font-style: italic; margin: 0; }
 .panel-hint { font-size: 0.76rem; color: var(--text-tertiary); }
@@ -2957,6 +2956,27 @@ function formatStageDate(key: string): string {
 .panel-leave-active { transition: transform 180ms var(--ease); }
 .panel-enter-from, .panel-leave-to { transform: translateX(100%); }
 
+@media (max-width: 800px) {
+  .overlay { align-items: flex-end; justify-content: center; }
+  .form-panel {
+    width: 100%; max-width: 100%;
+    height: auto; max-height: 92dvh;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .panel-enter-from, .panel-leave-to { transform: translateY(100%); }
+  .panel-header::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 8px; left: 50%; transform: translateX(-50%);
+    width: 36px; height: 4px;
+    border-radius: 99px;
+    background: var(--separator-2);
+  }
+  .panel-header { position: relative; padding-top: 22px; }
+}
+
 .panel-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 18px 20px 14px; border-bottom: 1px solid var(--separator-2); flex-shrink: 0;
@@ -3010,6 +3030,32 @@ function formatStageDate(key: string): string {
 }
 .open-action-resolved { color: #1A6B38; }
 
+.ferment-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--separator-2);
+  flex-wrap: wrap;
+}
+.ferment-actions .btn-submit {
+  flex-shrink: 0;
+  width: auto;
+}
+.btn-mark-complete {
+  margin-left: auto;
+  padding: 8px 14px;
+  font-size: 0.80rem; font-weight: 600;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--separator-2);
+  background: var(--surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+  white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-mark-complete:hover { background: var(--surface-2); color: var(--text-primary); }
 .btn-add-ingredient {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 0.78rem; font-weight: 600;
@@ -3241,12 +3287,64 @@ function formatStageDate(key: string): string {
 
 /* ── Responsive ─────────────────────────────────────── */
 @media (max-width: 800px) {
-  .stage-layout { gap: 16px; }
-
-  /* Help panel becomes a collapsible below the runner on mobile */
-  .help-panel { padding: 14px 16px; }
-
-  /* Stage runner cards */
+  .stage-layout { gap: 12px; }
   .phase-group { border-radius: var(--r-md); }
+
+  /* Header — status chip inline, action buttons compact */
+  .page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .page-actions .status-chip { order: -1; }
+  .discard-btn, .corrective-btn {
+    font-size: 0.72rem;
+    padding: 6px 10px;
+  }
+  .discard-btn span, .corrective-btn span { display: none; }
+
+  /* Phase header — tighter */
+  .phase-header { padding: 10px 14px 10px; }
+  .phase-icon { width: 24px; height: 24px; border-radius: 6px; }
+  .phase-title { font-size: 0.72rem; }
+
+  /* Stage rows — tighter */
+  .stage-summary { padding: 12px 14px; gap: 10px; }
+  .stage-num { width: 24px; height: 24px; font-size: 0.68rem; }
+  .stage-label { font-size: 0.84rem; }
+  .panel-body { padding: 14px 14px 16px; }
+
+  /* Phase summary stats — smaller */
+  .phase-stat { padding: 9px 14px; }
+  .phase-stat-value { font-size: 0.84rem; }
+
+  /* Fermentation buttons — compact row */
+  .ferment-actions {
+    padding: 10px 14px;
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+  .ferment-actions .btn-submit {
+    font-size: 0.78rem;
+    padding: 8px 12px;
+    flex-shrink: 0;
+  }
+  .btn-add-ingredient {
+    font-size: 0.75rem;
+    padding: 7px 10px;
+    flex-shrink: 0;
+  }
+  .btn-mark-complete {
+    font-size: 0.75rem;
+    padding: 7px 10px;
+    flex-shrink: 0;
+  }
+
+  /* Stats card — smaller values */
+  .stat-val { font-size: 0.95rem; }
+  .stat-label { font-size: 0.52rem; }
+  .stat-item { padding: 10px 4px; }
 }
 </style>

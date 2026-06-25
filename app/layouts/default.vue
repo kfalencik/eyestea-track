@@ -642,6 +642,8 @@ async function submitNewBatch() {
   border-top: 1px solid rgba(0,0,0,0.08);
   padding: 8px 4px max(8px, env(safe-area-inset-bottom));
   gap: 0;
+  transform: translateZ(0);
+  will-change: transform;
 }
 @media (max-width: 800px) {
   .mobile-nav { display: flex; align-items: flex-end; justify-content: space-around; }
