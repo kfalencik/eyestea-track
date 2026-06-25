@@ -143,75 +143,87 @@ function formatDate(ts: Timestamp | null | undefined): string {
 </script>
 
 <style scoped>
-.log-page { display: flex; flex-direction: column; gap: 28px; }
-
-.page-eyebrow {
-  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.07em;
-  text-transform: uppercase; color: var(--accent-deep); margin-bottom: 4px;
-}
-.page-title {
-  font-size: 1.85rem; font-weight: 700;
-  letter-spacing: -0.04em; color: var(--text-primary); line-height: 1;
-}
+.log-page { display: flex; flex-direction: column; gap: 24px; }
 
 /* Batch list */
 .batch-list {
-  display: flex; flex-direction: column;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--separator-2);
-  border-radius: var(--r-lg); overflow: hidden;
+  border-radius: var(--r-lg);
+  overflow: hidden;
   background: var(--surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .log-row {
-  display: flex; align-items: center; gap: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
   padding: 14px 20px;
   border-bottom: 1px solid var(--separator-2);
   transition: background var(--t-fast);
-  text-decoration: none; color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 .log-row:last-child { border-bottom: none; }
 .log-row:hover { background: var(--surface-2); }
 
 .log-row-left { width: 200px; flex-shrink: 0; }
 .log-batch-id {
-  font-family: var(--font-mono); font-size: 0.68rem;
-  color: var(--text-quarternary); letter-spacing: 0.03em; margin-bottom: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+  color: var(--text-placeholder);
+  letter-spacing: 0.02em;
+  margin-bottom: 3px;
 }
 .log-product {
-  font-size: 0.92rem; font-weight: 600;
-  color: var(--text-primary); letter-spacing: -0.02em;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
 }
 
 .log-row-mid {
-  flex: 1; display: flex; gap: 0; min-width: 0;
+  flex: 1;
+  display: flex;
+  gap: 0;
+  min-width: 0;
 }
 .log-stat {
-  display: flex; flex-direction: column; gap: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   padding: 0 16px;
   border-right: 1px solid var(--separator-2);
 }
 .log-stat:first-child { padding-left: 0; }
-.log-stat:last-child { border-right: none; }
+.log-stat:last-child  { border-right: none; }
 .log-stat-label {
-  font-size: 0.60rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.06em; color: var(--text-quarternary);
+  font-size: 0.60rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-quarternary);
 }
 .log-stat-value {
-  font-size: 0.88rem; font-weight: 600; color: var(--text-primary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
-.log-stat-value--bold {
-  font-weight: 700;
-}
+.log-stat-value--bold { font-weight: 700; }
 .mono { font-family: var(--font-mono); }
 
 /* Right side */
 .log-row-right {
-  display: flex; align-items: center; gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   flex-shrink: 0;
 }
-.log-date { font-size: 0.75rem; color: var(--text-quarternary); }
-.log-arrow { color: var(--text-placeholder); flex-shrink: 0; }
-.log-row:hover .log-arrow { color: var(--accent); }
+.log-date  { font-size: 0.74rem; color: var(--text-quarternary); }
+.log-arrow { color: var(--text-placeholder); flex-shrink: 0; transition: color var(--t-fast), transform var(--t-fast); }
+.log-row:hover .log-arrow { color: var(--accent); transform: translateX(2px); }
 
 /* Discarded */
 .log-discarded-badge {

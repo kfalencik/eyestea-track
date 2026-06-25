@@ -5,6 +5,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -12,12 +13,14 @@ body {
   color: var(--text-primary);
   background: var(--bg);
   min-height: 100vh;
+  min-height: 100dvh;
   line-height: 1.5;
+  letter-spacing: -0.005em;
 }
 
 a { color: inherit; text-decoration: none; }
 button { cursor: pointer; font-family: inherit; border: none; background: none; }
-input, select, textarea { font-family: inherit; }
+input, select, textarea { font-family: inherit; font-size: 1rem; }
 img, svg { display: block; }
 
 :focus-visible {
@@ -27,10 +30,10 @@ img, svg { display: block; }
 }
 
 /* ── Scrollbar ───────────────────────────────────── */
-::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--separator); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.18); }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.16); }
 
 /* ── Utilities ───────────────────────────────────── */
 .mono        { font-family: var(--font-mono); }
@@ -39,6 +42,8 @@ img, svg { display: block; }
 .text-accent { color: var(--accent); }
 .text-warn   { color: var(--red); }
 
+.btn-full { display: flex; width: 100%; justify-content: center; }
+
 .sr-only {
   position: absolute; width: 1px; height: 1px;
   padding: 0; margin: -1px; overflow: hidden;
@@ -46,9 +51,9 @@ img, svg { display: block; }
 }
 
 /* ── Page transitions ────────────────────────────── */
-.page-enter-active { transition: opacity 140ms var(--ease-out), transform 140ms var(--ease-out); }
+.page-enter-active { transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out); }
 .page-leave-active { transition: opacity 80ms var(--ease); }
-.page-enter-from   { opacity: 0; transform: translateY(8px); }
+.page-enter-from   { opacity: 0; transform: translateY(6px); }
 .page-leave-to     { opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) {

@@ -623,7 +623,7 @@ function orderTotal(order: Order): string {
   display: inline-flex; align-items: center; gap: 4px;
   font-size: 0.63rem; font-weight: 600;
   padding: 2px 7px; border-radius: 99px;
-  background: rgba(76,217,123,0.10); color: #1A6B38;
+  background: var(--accent-tint); color: var(--accent-deep);
 }
 
 .order-lines-preview { display: flex; flex-wrap: wrap; gap: 5px; }
@@ -683,91 +683,50 @@ function orderTotal(order: Order): string {
   /* Prevent mono ref from breaking mid-character */
   .order-ref { word-break: keep-all; white-space: nowrap; }
 
+  /* Stacked card: total + date on top row, actions filling width below */
   .order-row-right {
     flex-wrap: wrap;
     gap: 8px;
-    justify-content: space-between;
   }
 
-  /* Total + date sit together on the left, actions on the right */
   .order-total { font-size: 1rem; }
+  .order-date { flex: 1; }
 
-  .order-actions { margin-left: auto; }
+  /* Actions fill the remaining row width so buttons are easy to tap */
+  .order-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
 
-  /* Make buttons full-row on very small screens */
-  .btn-dispatch, .btn-invoice { padding: 8px 14px; font-size: 0.78rem; }
+  .btn-dispatch, .btn-invoice {
+    padding: 9px 14px; font-size: 0.78rem;
+    touch-action: manipulation;
+  }
 }
 
-/* Empty */
-.empty-state {
-  display: flex; flex-direction: column; align-items: center;
-  padding: 64px 32px; gap: 10px; text-align: center;
-  border: 1px dashed var(--separator-2); border-radius: var(--r-lg);
-  background: var(--surface);
-}
-.empty-icon { color: var(--text-placeholder); margin-bottom: 4px; }
-.empty-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
-.empty-sub { font-size: 0.82rem; color: var(--text-quarternary); max-width: 300px; line-height: 1.5; margin-bottom: 8px; }
-
-/* Overlay & panel */
-.overlay {
-  position: fixed; inset: 0; z-index: 1000;
-  background: rgba(0,0,0,0.28); backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: flex-end;
-}
-.overlay-enter-active, .overlay-leave-active { transition: opacity 180ms var(--ease); }
-.overlay-enter-from, .overlay-leave-to { opacity: 0; }
-
-.form-panel {
-  width: 520px; max-width: 94vw; height: 100vh;
-  background: var(--surface); display: flex; flex-direction: column;
-  box-shadow: var(--shadow-xl);
-}
+/* Overlay & panel — shared.css provides base .overlay / .form-panel styles.
+   Only panel slide-in transitions are local since they use the <Transition name="panel"> hook. */
 .panel-enter-active { transition: transform 240ms var(--ease-spring); }
 .panel-leave-active { transition: transform 180ms var(--ease); }
 .panel-enter-from, .panel-leave-to { transform: translateX(100%); }
 @media (max-width: 800px) {
-  .overlay { align-items: flex-end; justify-content: stretch; }
-  .form-panel { width: 100%; max-width: 100%; height: auto; max-height: 92vh; border-radius: 20px 20px 0 0; }
   .panel-enter-from, .panel-leave-to { transform: translateY(100%); }
   .panel-enter-active { transition: transform 260ms var(--ease-spring); }
   .panel-leave-active { transition: transform 200ms var(--ease); }
 }
 
+/* Local panel padding — slightly wider than the shared.css default */
 .panel-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 24px 16px; border-bottom: 1px solid var(--separator-2); flex-shrink: 0;
+  padding: 20px 24px 16px;
 }
-.panel-title { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
-.panel-close {
-  width: 28px; height: 28px; border-radius: var(--r-sm);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text-quarternary); transition: background var(--t-fast), color var(--t-fast);
+.panel-body {
+  flex: 1; overflow-y: auto; padding: 20px 24px;
+  display: flex; flex-direction: column; gap: 14px;
+  -webkit-overflow-scrolling: touch;
 }
-.panel-close:hover { background: var(--surface-3); color: var(--text-primary); }
-
-.panel-body { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
 .panel-footer {
-  padding: 16px 24px; border-top: 1px solid var(--separator-2);
-  display: flex; gap: 10px; justify-content: flex-end; flex-shrink: 0;
+  padding: 16px 24px;
 }
-
-/* Fields */
-.field { display: flex; flex-direction: column; gap: 5px; }
-.field-label {
-  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.02em;
-  text-transform: uppercase; color: var(--text-quarternary);
-}
-.label-opt { font-weight: 400; text-transform: none; letter-spacing: 0; }
-.field-input {
-  padding: 9px 12px; border-radius: var(--r-sm);
-  border: 1px solid var(--separator-2); background: var(--surface-2);
-  font-size: 0.88rem; color: var(--text-primary); width: 100%;
-  transition: border-color var(--t-fast);
-}
-.field-input:focus { outline: none; border-color: var(--accent); background: var(--surface); }
-.field-input--mt { margin-top: 6px; }
-.field-textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
 
 /* Customer preview card */
 .customer-preview {
@@ -789,6 +748,9 @@ function orderTotal(order: Order): string {
   letter-spacing: 0.03em; margin-top: 2px;
 }
 
+/* .label-opt modifies .field-label inline — not in shared.css */
+.label-opt { font-weight: 400; text-transform: none; letter-spacing: 0; }
+
 .field-group-label {
   font-size: 0.65rem; font-weight: 700; letter-spacing: 0.07em;
   text-transform: uppercase; color: var(--text-placeholder);
@@ -802,14 +764,17 @@ function orderTotal(order: Order): string {
   background: var(--surface-2); border: 1px solid var(--separator-2);
 }
 
-.stock-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--separator-2); border-radius: var(--r-lg); overflow: hidden; }
+.stock-list {
+  display: flex; flex-direction: column; gap: 0;
+  border: 1px solid var(--separator-2); border-radius: var(--r-lg); overflow: hidden;
+}
 .stock-row {
   display: flex; align-items: center; gap: 12px; padding: 12px 14px;
   border-bottom: 1px solid var(--separator-2);
   background: var(--surface); transition: background var(--t-fast);
 }
 .stock-row:last-child { border-bottom: none; }
-.stock-row--selected { background: rgba(76,217,123,0.05); border-left: 3px solid var(--accent); }
+.stock-row--selected { background: var(--accent-tint-2); border-left: 3px solid var(--accent); }
 .stock-row--selected:not(:last-child) { border-bottom-color: var(--separator-2); }
 
 .stock-info { flex: 1; min-width: 0; }
@@ -849,31 +814,6 @@ function orderTotal(order: Order): string {
 .order-summary-row--total { font-weight: 700; color: var(--text-primary); background: var(--surface-3); }
 .mono { font-family: var(--font-mono); }
 
-.form-error {
-  font-size: 0.78rem; color: var(--red); padding: 8px 12px;
-  background: rgba(229,57,53,0.07); border-radius: var(--r-sm);
-  border: 1px solid rgba(229,57,53,0.2);
-}
-
-/* Buttons */
-.btn-submit {
-  padding: 9px 20px; border-radius: var(--r-sm);
-  background: linear-gradient(145deg, #4CD97B, #28A852); color: #fff;
-  font-size: 0.85rem; font-weight: 600;
-  box-shadow: 0 1px 6px rgba(40,168,82,0.25);
-  transition: box-shadow var(--t-fast), opacity var(--t-fast), transform var(--t-fast) var(--ease-spring);
-}
-.btn-submit:hover:not(:disabled) { box-shadow: 0 3px 10px rgba(40,168,82,0.35); transform: translateY(-1px); }
-.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.btn-cancel {
-  padding: 9px 16px; border-radius: var(--r-sm);
-  border: 1px solid var(--separator-2); background: var(--surface-2);
-  font-size: 0.85rem; font-weight: 500; color: var(--text-secondary);
-  transition: background var(--t-fast);
-}
-.btn-cancel:hover { background: var(--surface-3); }
-
 /* Dispatch confirm dialog */
 .confirm-dialog {
   background: var(--surface); border-radius: var(--r-lg);
@@ -882,7 +822,7 @@ function orderTotal(order: Order): string {
   display: flex; flex-direction: column; gap: 10px;
 }
 .confirm-icon {
-  width: 44px; height: 44px; border-radius: 12px;
+  width: 44px; height: 44px; border-radius: var(--r-sm);
   background: rgba(28,126,240,0.10); color: #1C7EF0;
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 4px;

@@ -10,7 +10,7 @@
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 28px;
-  min-height: 48px;
+  min-height: 44px;
 }
 .page-header-left {
   display: flex;
@@ -30,25 +30,26 @@
 }
 .back-link:hover { color: var(--accent); }
 .page-title {
-  font-size: 1.72rem;
-  font-weight: 700;
-  letter-spacing: -0.04em;
+  font-size: 1.80rem;
+  font-weight: 800;
+  letter-spacing: -0.045em;
   color: var(--text-primary);
-  line-height: 1.1;
+  line-height: 1.05;
 }
 .page-sub {
   font-size: 0.82rem;
   color: var(--text-quarternary);
   letter-spacing: -0.01em;
-  margin-top: 3px;
+  margin-top: 4px;
+  font-weight: 400;
 }
 .page-eyebrow {
-  font-size: 0.68rem;
-  font-weight: 600;
+  font-size: 0.67rem;
+  font-weight: 500;
   color: var(--text-quarternary);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 .page-actions {
   display: flex;
@@ -57,7 +58,7 @@
   flex-shrink: 0;
 }
 
-/* ── Section head (dashboard & sub-pages) ────────── */
+/* ── Section head ────────────────────────────────── */
 .section-head {
   display: flex;
   align-items: center;
@@ -66,11 +67,11 @@
   margin-bottom: 12px;
 }
 .section-title {
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: var(--text-quarternary);
+  color: var(--text-tertiary);
 }
 .section-link {
   font-size: 0.78rem;
@@ -100,17 +101,17 @@
 }
 
 .form-section {
-  padding: 24px 28px;
+  padding: 22px 24px;
   border-bottom: 1px solid var(--separator-2);
 }
 .form-section:last-child { border-bottom: none; }
 
 .form-section-title {
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: var(--text-quarternary);
+  color: var(--text-tertiary);
   margin-bottom: 16px;
 }
 .form-section-hint {
@@ -122,13 +123,13 @@
 }
 .form-hint {
   font-size: 0.80rem;
-  color: var(--text-quarternary);
+  color: var(--text-tertiary);
   margin-bottom: 20px;
   line-height: 1.5;
   padding: 12px 16px;
   background: var(--surface-2);
   border-radius: var(--r-sm);
-  border-left: 3px solid var(--separator);
+  border-left: 2px solid var(--separator);
 }
 
 /* ── Fields ──────────────────────────────────────── */
@@ -140,7 +141,7 @@
 .field-label {
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   letter-spacing: -0.01em;
   display: flex;
   flex-direction: column;
@@ -154,17 +155,18 @@
   line-height: 1.4;
 }
 .field-input {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-family: var(--font-sans);
   color: var(--text-primary);
   background: rgba(118,118,128,0.07);
-  border: 1px solid rgba(60,60,67,0.15);
+  border: 1px solid rgba(60,60,67,0.13);
   border-radius: var(--r-sm);
-  padding: 10px 13px;
+  padding: 11px 14px;
   width: 100%;
   transition: border-color var(--t-fast), box-shadow var(--t-fast), background var(--t-fast);
   -webkit-appearance: none;
   appearance: none;
+  letter-spacing: -0.01em;
 }
 .field-input:focus {
   outline: none;
@@ -175,7 +177,7 @@
 .field-input:disabled { opacity: 0.45; cursor: not-allowed; }
 .field-input--short { max-width: 160px; }
 .field-input--mt { margin-top: 6px; }
-.field-textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+.field-textarea { resize: vertical; min-height: 80px; line-height: 1.55; }
 
 select.field-input {
   background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238E8E93' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
@@ -410,15 +412,17 @@ select.field-input {
   font-size: 0.84rem;
   font-weight: 500;
   color: var(--text-secondary);
-  padding: 9px 16px;
+  padding: 10px 16px;
   border-radius: var(--r-sm);
   background: var(--surface-2);
   border: 1px solid var(--separator);
   transition: color var(--t-fast), background var(--t-fast);
   white-space: nowrap;
   touch-action: manipulation;
+  letter-spacing: -0.01em;
 }
 .btn-cancel:hover { color: var(--text-primary); background: var(--surface-3); }
+.btn-cancel:active { transform: scale(0.98); }
 
 .btn-submit {
   display: inline-flex;
@@ -429,17 +433,19 @@ select.field-input {
   color: #fff;
   padding: 10px 20px;
   border-radius: var(--r-sm);
-  background: linear-gradient(145deg, #4CD97B, #28A852);
-  box-shadow: 0 1px 6px rgba(40,168,82,0.30), 0 0 0 0.5px rgba(0,0,0,0.04);
-  transition: box-shadow var(--t-fast), transform var(--t-fast) var(--ease-spring);
+  background: linear-gradient(160deg, #3FD072, #25A04E);
+  box-shadow: 0 1px 4px rgba(37,160,78,0.35), 0 0 0 0.5px rgba(0,0,0,0.06);
+  transition: box-shadow var(--t-base), transform var(--t-fast) var(--ease-spring), opacity var(--t-fast);
   white-space: nowrap;
   touch-action: manipulation;
+  letter-spacing: -0.01em;
 }
 .btn-submit:hover:not(:disabled) {
-  box-shadow: 0 4px 14px rgba(40,168,82,0.40);
+  box-shadow: 0 4px 16px rgba(37,160,78,0.40);
   transform: translateY(-1px);
 }
-.btn-submit:disabled { opacity: 0.40; cursor: not-allowed; }
+.btn-submit:active:not(:disabled) { transform: scale(0.98); }
+.btn-submit:disabled { opacity: 0.38; cursor: not-allowed; }
 
 /* ── Primary action button (page-level) ─────────── */
 .btn-new {
@@ -451,25 +457,27 @@ select.field-input {
   color: #fff;
   padding: 10px 18px;
   border-radius: var(--r-sm);
-  background: linear-gradient(145deg, #4CD97B, #28A852);
-  box-shadow: 0 1px 6px rgba(40,168,82,0.30), 0 0 0 0.5px rgba(0,0,0,0.04);
-  transition: box-shadow var(--t-fast), transform var(--t-fast) var(--ease-spring);
+  background: linear-gradient(160deg, #3FD072, #25A04E);
+  box-shadow: 0 1px 4px rgba(37,160,78,0.35), 0 0 0 0.5px rgba(0,0,0,0.06);
+  transition: box-shadow var(--t-base), transform var(--t-fast) var(--ease-spring);
   white-space: nowrap;
   flex-shrink: 0;
   touch-action: manipulation;
+  letter-spacing: -0.01em;
 }
 .btn-new:hover {
-  box-shadow: 0 4px 14px rgba(40,168,82,0.40);
+  box-shadow: 0 4px 16px rgba(37,160,78,0.40);
   transform: translateY(-1px);
 }
+.btn-new:active { transform: scale(0.98); }
 
 /* ── Icon-only button ────────────────────────────── */
 .btn-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--r-sm);
   background: var(--surface-2);
   border: 1px solid var(--separator);
@@ -479,6 +487,7 @@ select.field-input {
   touch-action: manipulation;
 }
 .btn-icon:hover { background: var(--surface-3); color: var(--text-primary); }
+.btn-icon:active { transform: scale(0.94); }
 .btn-icon--danger:hover { background: var(--red-tint); color: var(--red); border-color: rgba(255,59,48,0.20); }
 
 /* ── List card (shared list container) ───────────── */
