@@ -201,7 +201,7 @@ function formatDate(ts: Timestamp | null | undefined): string {
 /* Summary */
 .summary-strip {
   display: flex; align-items: center;
-  background: #fff; border: 1px solid rgba(60,60,67,0.10);
+  background: var(--surface); border: 1px solid var(--separator-2);
   border-radius: var(--r-lg); overflow: hidden; align-self: flex-start;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
@@ -212,9 +212,10 @@ function formatDate(ts: Timestamp | null | undefined): string {
 
 /* Table */
 .inv-list {
-  border: 1px solid rgba(60,60,67,0.10);
-  border-radius: var(--r-lg); overflow: hidden;
-  background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  border: 1px solid var(--separator-2);
+  border-radius: var(--r-lg); overflow: hidden; overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 .inv-grid {
   display: grid;
@@ -237,6 +238,8 @@ function formatDate(ts: Timestamp | null | undefined): string {
 .inv-link {
   font-weight: 600; letter-spacing: -0.02em; color: var(--text-primary);
   text-decoration: none; transition: color var(--t-fast);
+  display: inline-flex; align-items: center;
+  min-height: 44px; padding-block: 4px;
 }
 .inv-link:hover { color: var(--accent); }
 .inv-mono { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-secondary); }
@@ -268,6 +271,7 @@ function formatDate(ts: Timestamp | null | undefined): string {
     gap: 10px 12px;
     padding: 14px 16px;
     align-items: start;
+    min-height: 44px;
   }
 
   /* Product spans full width as the card title */
@@ -313,8 +317,8 @@ function formatDate(ts: Timestamp | null | undefined): string {
 .empty-state {
   display: flex; flex-direction: column; align-items: center;
   padding: 64px 32px; gap: 10px; text-align: center;
-  border: 1px dashed rgba(60,60,67,0.18); border-radius: var(--r-lg);
-  background: #fff;
+  border: 1px dashed var(--separator-2); border-radius: var(--r-lg);
+  background: var(--surface);
 }
 .empty-icon { color: var(--text-placeholder); margin-bottom: 4px; }
 .empty-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); }

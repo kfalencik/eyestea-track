@@ -51,15 +51,15 @@
     </div>
 
     <div v-else class="empty-state">
-      <div class="empty-icon">
+      <div class="empty-state-icon">
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
           <path d="M9 12h22l-2 16a3 3 0 01-3 2.5H14a3 3 0 01-3-2.5L9 12z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
           <path d="M14 12V10a6 6 0 0112 0v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
           <path d="M28 18c2.5-1 4.5.2 4.5 2.5S30.5 23.5 28 22.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
       </div>
-      <p class="empty-title">No products yet</p>
-      <p class="empty-sub">Create your first product recipe to reuse it when starting batches.</p>
+      <p class="empty-state-title">No products yet</p>
+      <p class="empty-state-sub">Create your first product recipe to reuse it when starting batches.</p>
       <button class="btn-new" @click="openNew()">Create first product</button>
     </div>
 
@@ -81,7 +81,7 @@
                 </button>
               </div>
 
-              <div class="panel-body">
+              <div class="panel-body-scroll">
                 <!-- Name -->
                 <div class="field">
                   <label class="field-label">Product name</label>
@@ -181,7 +181,7 @@
                 </div>
 
                 <div v-if="formError" class="form-error">{{ formError }}</div>
-              </div>
+              </div><!-- /.panel-body-scroll -->
 
               <div class="panel-footer">
                 <button class="btn-cancel" @click="closeForm()">Cancel</button>
@@ -397,7 +397,7 @@ async function doDelete() {
 <style scoped>
 .products-page { display: flex; flex-direction: column; gap: 32px; }
 
-/* Product list */
+/* ── Product list ─────────────────────────────────── */
 .product-list {
   display: flex; flex-direction: column; gap: 0;
   border: 1px solid var(--separator-2);
@@ -442,75 +442,7 @@ async function doDelete() {
 
 .product-actions { display: flex; gap: 6px; flex-shrink: 0; padding-top: 2px; }
 
-/* Empty state */
-.empty-state {
-  display: flex; flex-direction: column; align-items: center;
-  padding: 64px 32px; gap: 10px; text-align: center;
-  border: 1px dashed var(--separator-2); border-radius: var(--r-lg);
-  background: var(--surface);
-}
-.empty-icon { color: var(--text-placeholder); margin-bottom: 4px; }
-.empty-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
-.empty-sub { font-size: 0.82rem; color: var(--text-quarternary); max-width: 300px; line-height: 1.5; margin-bottom: 8px; }
-
-/* Overlay */
-.overlay {
-  position: fixed; inset: 0; z-index: 1000;
-  background: rgba(0,0,0,0.28);
-  backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: flex-end;
-}
-.overlay-enter-active, .overlay-leave-active { transition: opacity 180ms var(--ease); }
-.overlay-enter-from, .overlay-leave-to { opacity: 0; }
-
-/* Slide-over panel */
-.form-panel {
-  width: 480px; max-width: 94vw;
-  height: 100vh;
-  background: var(--surface);
-  display: flex; flex-direction: column;
-  box-shadow: var(--shadow-xl);
-}
-.panel-enter-active { transition: transform 240ms var(--ease-spring); }
-.panel-leave-active { transition: transform 180ms var(--ease); }
-.panel-enter-from, .panel-leave-to { transform: translateX(100%); }
-@media (max-width: 800px) {
-  .overlay { align-items: flex-end; justify-content: stretch; }
-  .form-panel { width: 100%; max-width: 100%; height: auto; max-height: 92vh; border-radius: 20px 20px 0 0; }
-  .panel-enter-from, .panel-leave-to { transform: translateY(100%); }
-  .panel-enter-active { transition: transform 260ms var(--ease-spring); }
-  .panel-leave-active { transition: transform 200ms var(--ease); }
-}
-
-.panel-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 20px 14px;
-  border-bottom: 1px solid var(--separator-2);
-  flex-shrink: 0; gap: 12px;
-}
-.panel-eyebrow { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-quarternary); margin-bottom: 2px; }
-.panel-title { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
-.panel-close {
-  width: 28px; height: 28px; border-radius: var(--r-sm);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text-quarternary);
-  transition: background var(--t-fast), color var(--t-fast);
-}
-.panel-close:hover { background: var(--surface-3); color: var(--text-primary); }
-
-.panel-body {
-  flex: 1; overflow-y: auto;
-  padding: 20px; display: flex; flex-direction: column; gap: 18px;
-}
-
-.panel-footer {
-  padding: 16px 24px;
-  border-top: 1px solid var(--separator-2);
-  display: flex; gap: 10px; justify-content: flex-end;
-  flex-shrink: 0;
-}
-
-/* Recipe section */
+/* ── Recipe section ───────────────────────────────── */
 .recipe-section {
   display: flex; flex-direction: column; gap: 10px;
   padding: 14px;
@@ -538,7 +470,7 @@ async function doDelete() {
 .recipe-line {
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
   padding: 8px 10px;
-  background: #fff;
+  background: var(--surface);
   border-radius: var(--r-sm);
   border: 1px solid var(--separator-2);
 }
@@ -579,13 +511,7 @@ async function doDelete() {
   color: var(--accent); font-weight: 600; text-decoration: underline;
 }
 
-.form-error {
-  font-size: 0.78rem; color: var(--red); padding: 8px 12px;
-  background: rgba(229,57,53,0.07); border-radius: var(--r-sm);
-  border: 1px solid rgba(229,57,53,0.2);
-}
-
-/* Confirm dialog */
+/* ── Confirm dialog ───────────────────────────────── */
 .confirm-dialog {
   background: var(--surface); border-radius: var(--r-lg);
   padding: 24px; width: 360px; max-width: 92vw;
@@ -604,4 +530,13 @@ async function doDelete() {
 }
 .btn-danger:hover:not(:disabled) { box-shadow: 0 3px 10px rgba(229,57,53,0.35); }
 .btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 800px) {
+  .recipe-add-row { flex-wrap: wrap; }
+  .recipe-add-select { flex: 1 1 100%; }
+  .recipe-add-amount { width: auto; flex: 1 1 auto; }
+  .recipe-add-unit { width: auto; flex: 1 1 auto; }
+  .recipe-add-btn { flex: 1 1 auto; justify-content: center; }
+}
 </style>

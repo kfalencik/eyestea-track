@@ -83,7 +83,7 @@
               <div class="batch-row-name">{{ b.productName }}</div>
               <div class="batch-row-meta">
                 <span class="batch-id-label">{{ b.batchId }}</span>
-                <span class="batch-stage-label">Step {{ b.stage }} of 18</span>
+                <span class="batch-stage-label">Step {{ b.stage }} of 19</span>
                 <span v-if="b.stageData?.pitch?.ogRecorded" class="batch-og">OG {{ Number(b.stageData.pitch.ogRecorded).toFixed(3) }}</span>
                 <span v-if="b.status === 'hold'" class="batch-warn-label">
                   <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1L10 10H1L5.5 1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5.5 4.5v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
@@ -134,8 +134,7 @@
                     v-if="!startForm.selectedProductId"
                     v-model="startForm.productName"
                     type="text"
-                    class="field-input"
-                    style="margin-top:6px"
+                    class="field-input field-input--mt"
                     placeholder="e.g. Lemon Original"
                   />
                 </div>
@@ -144,7 +143,7 @@
                   <input v-model="startForm.startDate" type="date" class="field-input" />
                 </div>
                 <div v-if="startError" class="form-error">{{ startError }}</div>
-                <button class="btn-submit" style="width:100%;justify-content:center" :disabled="!resolvedProductName() || startLoading" @click="submitQuickStart(slot)">
+                <button class="btn-submit btn-full" :disabled="!resolvedProductName() || startLoading" @click="submitQuickStart(slot)">
                   {{ startLoading ? 'Starting…' : 'Start brew day →' }}
                 </button>
               </div>
@@ -153,7 +152,7 @@
 
           <!-- All occupied -->
           <div v-if="activeBatches.length === 0 && emptySlots.length === 0" class="batch-row batch-row--empty">
-            <span class="empty-slot-label" style="padding:20px">Both fermenters in use</span>
+            <span class="empty-slot-label">Both fermenters in use</span>
           </div>
         </div>
 
@@ -274,8 +273,7 @@
                     v-if="!newBatchForm.selectedProductId"
                     v-model="newBatchForm.productName"
                     type="text"
-                    class="field-input"
-                    style="margin-top:6px"
+                    class="field-input field-input--mt"
                     placeholder="e.g. Lemon Original"
                   />
                 </div>
@@ -643,9 +641,10 @@ async function submitNewBatch() {
 /* ── KPI strip ─────────────────────────────────────── */
 .kpi-strip {
   display: flex; align-items: center;
-  background: #fff; border: 1px solid rgba(60,60,67,0.10);
+  background: var(--surface); border: 1px solid var(--separator-2);
   border-radius: var(--r-lg); box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   align-self: flex-start; min-width: 100%;
+  overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch;
 }
 .kpi { padding: 16px 28px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
 .kpi-val {
@@ -675,9 +674,9 @@ async function submitNewBatch() {
 /* ── Batch list ────────────────────────────────────── */
 .batch-list {
   display: flex; flex-direction: column;
-  border: 1px solid rgba(60,60,67,0.10);
+  border: 1px solid var(--separator-2);
   border-radius: var(--r-lg); overflow: hidden;
-  background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .batch-row {
@@ -705,7 +704,7 @@ async function submitNewBatch() {
 .batch-row-body { flex: 1; padding: 14px 16px; min-width: 0; }
 .batch-row-top {
   display: flex; align-items: center; gap: 6px;
-  margin-bottom: 6px; flex-wrap: nowrap;
+  margin-bottom: 6px; flex-wrap: wrap;
 }
 .batch-fermenter {
   font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
@@ -760,6 +759,7 @@ async function submitNewBatch() {
   background: none; border: none; cursor: pointer;
   color: var(--text-placeholder);
   transition: color var(--t-fast), background var(--t-fast);
+  touch-action: manipulation;
 }
 .empty-slot-btn:hover { color: var(--accent); background: var(--accent-tint-2); }
 .empty-slot-label { font-size: 0.84rem; font-weight: 600; color: inherit; letter-spacing: -0.01em; }
@@ -802,7 +802,7 @@ async function submitNewBatch() {
 
 /* ── Reminders ─────────────────────────────────────── */
 .reminders-list {
-  background: #fff; border: 1px solid rgba(60,60,67,0.10);
+  background: var(--surface); border: 1px solid var(--separator-2);
   border-radius: var(--r-lg); overflow: hidden;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
@@ -840,7 +840,7 @@ async function submitNewBatch() {
 
 /* ── Low stock ─────────────────────────────────────── */
 .stock-warn-list {
-  background: #fff; border: 1px solid rgba(60,60,67,0.10);
+  background: var(--surface); border: 1px solid var(--separator-2);
   border-radius: var(--r-lg); overflow: hidden;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
@@ -862,7 +862,7 @@ async function submitNewBatch() {
 
 /* ── Pending orders ────────────────────────────────── */
 .order-list {
-  background: #fff; border: 1px solid rgba(60,60,67,0.10);
+  background: var(--surface); border: 1px solid var(--separator-2);
   border-radius: var(--r-lg); overflow: hidden;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
@@ -879,21 +879,7 @@ async function submitNewBatch() {
 .order-cans { font-size: 0.70rem; color: var(--text-quarternary); white-space: nowrap; }
 .order-val { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; color: var(--accent-deep); white-space: nowrap; }
 
-/* ── Panel (new batch drawer) ──────────────────────── */
-.overlay { position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.28); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:flex-end; }
-.form-panel { width:420px; max-width:94vw; height:100vh; background:#fff; display:flex; flex-direction:column; box-shadow:var(--shadow-xl); }
-.panel-header { display:flex; align-items:center; justify-content:space-between; padding:18px 20px 14px; border-bottom:1px solid var(--separator-2); flex-shrink:0; }
-.panel-eyebrow { font-size:0.68rem; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-quarternary); margin-bottom:2px; }
-.panel-title { font-size:1.05rem; font-weight:700; letter-spacing:-0.03em; color:var(--text-primary); }
-.panel-close { width:28px; height:28px; border-radius:var(--r-sm); display:flex; align-items:center; justify-content:center; color:var(--text-quarternary); transition:background var(--t-fast),color var(--t-fast); }
-.panel-close:hover { background:var(--surface-3); color:var(--text-primary); }
-.panel-body { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:18px; }
-.panel-footer { padding:16px 24px; border-top:1px solid var(--separator-2); display:flex; gap:10px; justify-content:flex-end; flex-shrink:0; }
-.overlay-enter-active,.overlay-leave-active { transition:opacity 180ms var(--ease); }
-.overlay-enter-from,.overlay-leave-to { opacity:0; }
-.panel-enter-active { transition:transform 240ms var(--ease-spring); }
-.panel-leave-active { transition:transform 180ms var(--ease); }
-.panel-enter-from,.panel-leave-to { transform:translateX(100%); }
+/* Panel styles in shared.css */
 
 /* ── Responsive ────────────────────────────────────── */
 @media (max-width: 1024px) {
@@ -902,16 +888,14 @@ async function submitNewBatch() {
 }
 
 @media (max-width: 800px) {
-  .kpi-strip { flex-wrap: wrap; }
-  .kpi { padding: 14px 16px; flex: 1 1 calc(33.33% - 2px); }
+  .kpi { padding: 14px 16px; min-width: 100px; flex: 0 0 auto; }
   .kpi-sep { display: none; }
   .kpi-val { font-size: 1.5rem; }
 
   .body-grid { grid-template-columns: 1fr; gap: 20px; }
   .col-side { order: -1; }
-
-  .overlay { align-items: flex-end; justify-content: stretch; }
-  .form-panel { width: 100%; max-width: 100%; height: auto; max-height: 90vh; border-radius: 20px 20px 0 0; }
-  .panel-enter-from,.panel-leave-to { transform: translateY(100%); }
 }
+
+.btn-full { display: flex; width: 100%; justify-content: center; }
+.field-input--mt { margin-top: 6px; }
 </style>

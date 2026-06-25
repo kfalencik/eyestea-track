@@ -28,10 +28,10 @@
             {{ initials(c.name) }}
           </div>
           <div class="card-badges">
-            <span class="type-badge" :class="`type-badge--${typeColor(c.type)}`">
+            <span class="status-badge" :class="`status-badge--${typeColor(c.type)}`">
               {{ typeLabel(c.type) }}
             </span>
-            <span v-if="needsReview(c)" class="review-badge">
+            <span v-if="needsReview(c)" class="status-badge status-badge--amber customer-review-badge">
               <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
                 <path d="M4.5 1v3.5l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
                 <circle cx="4.5" cy="4.5" r="3.8" stroke="currentColor" stroke-width="1.1"/>
@@ -153,7 +153,7 @@
                     <div class="detail-row">
                       <span class="detail-key">Customer type</span>
                       <span class="detail-val">
-                        <span class="type-badge" :class="`type-badge--${typeColor(detailCustomer?.type)}`">
+                        <span class="status-badge" :class="`status-badge--${typeColor(detailCustomer?.type)}`">
                           {{ typeLabel(detailCustomer?.type) }}
                         </span>
                       </span>

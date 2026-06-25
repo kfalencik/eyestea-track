@@ -17,7 +17,7 @@
         class="log-row"
       >
         <div class="log-row-left">
-          <div class="log-batch-id">{{ b.batchId }}</div>
+          <div class="log-batch-id batch-link">{{ b.batchId }}</div>
           <div class="log-product">{{ b.productName }}</div>
           <span v-if="b.status === 'disposed'" class="log-discarded-badge">Discarded</span>
         </div>
@@ -159,7 +159,7 @@ function formatDate(ts: Timestamp | null | undefined): string {
   display: flex; flex-direction: column;
   border: 1px solid var(--separator-2);
   border-radius: var(--r-lg); overflow: hidden;
-  background: #fff;
+  background: var(--surface);
 }
 
 .log-row {
@@ -218,7 +218,7 @@ function formatDate(ts: Timestamp | null | undefined): string {
   display: inline-block; margin-top: 4px;
   font-size: 0.60rem; font-weight: 700; letter-spacing: 0.05em;
   text-transform: uppercase; padding: 2px 8px; border-radius: 99px;
-  background: rgba(229,57,53,0.10); color: #C62828;
+  background: var(--danger-light); color: var(--danger);
 }
 .log-discarded-reason {
   display: flex; flex-direction: column; gap: 2px;
@@ -257,7 +257,7 @@ function formatDate(ts: Timestamp | null | undefined): string {
   display: flex; flex-direction: column; align-items: center;
   padding: 64px 32px; gap: 10px; text-align: center;
   border: 1px dashed var(--separator-2); border-radius: var(--r-lg);
-  background: #fff;
+  background: var(--surface);
 }
 .empty-icon { color: var(--text-placeholder); margin-bottom: 4px; }
 .empty-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); }

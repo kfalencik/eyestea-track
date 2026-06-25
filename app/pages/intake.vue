@@ -539,7 +539,12 @@ function catLabel(cat: string): string { return CAT_LABELS[cat] ?? cat }
   border-radius: var(--r-sm);
   padding: 3px;
   width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
+.tab-bar::-webkit-scrollbar { display: none; }
 .tab-btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 7px 16px;
@@ -547,9 +552,11 @@ function catLabel(cat: string): string { return CAT_LABELS[cat] ?? cat }
   font-size: 0.84rem; font-weight: 500;
   color: var(--text-secondary);
   transition: background var(--t-fast), color var(--t-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .tab-btn--active {
-  background: #fff;
+  background: var(--surface);
   color: var(--text-primary);
   font-weight: 600;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
@@ -566,19 +573,19 @@ function catLabel(cat: string): string { return CAT_LABELS[cat] ?? cat }
 /* ── Stock grid ──────────────────────────────────────── */
 .stock-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 14px;
 }
 .stock-card {
-  background: #fff;
-  border: 1px solid rgba(60,60,67,0.10);
+  background: var(--surface);
+  border: 1px solid var(--separator-2);
   border-radius: var(--r-lg);
   padding: 16px;
   display: flex; flex-direction: column; gap: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-xs);
   transition: box-shadow var(--t-fast);
 }
-.stock-card--low { border-color: rgba(255,59,48,0.20); }
+.stock-card--low { border-color: rgba(255,59,48,0.22); }
 .stock-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .stock-cat-badge {
   font-size: 0.62rem; font-weight: 700; letter-spacing: 0.05em;
@@ -612,11 +619,11 @@ function catLabel(cat: string): string { return CAT_LABELS[cat] ?? cat }
 
 /* ── Ingredients list ────────────────────────────────── */
 .ing-list {
-  background: #fff;
-  border: 1px solid rgba(60,60,67,0.10);
+  background: var(--surface);
+  border: 1px solid var(--separator-2);
   border-radius: var(--r-lg);
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-xs);
 }
 .ing-row {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
@@ -647,37 +654,48 @@ function catLabel(cat: string): string { return CAT_LABELS[cat] ?? cat }
 .empty-state {
   display: flex; flex-direction: column; align-items: center;
   padding: 64px 32px; gap: 10px; text-align: center;
-  border: 1px dashed rgba(60,60,67,0.18); border-radius: var(--r-lg);
-  background: #fff;
+  border: 1px dashed var(--separator); border-radius: var(--r-lg);
+  background: var(--surface);
 }
 .empty-icon { color: var(--text-placeholder); margin-bottom: 4px; }
 .empty-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
 .empty-sub { font-size: 0.82rem; color: var(--text-quarternary); max-width: 320px; line-height: 1.5; }
 
+/* ── Stock grid responsive ───────────────────────────── */
+@media (max-width: 480px) {
+  .stock-grid { grid-template-columns: 1fr; }
+}
+
 /* ── Cert indicators ─────────────────────────────────── */
 .cert-ok  { display:inline-flex; align-items:center; color: var(--accent); }
 .cert-miss { display:inline-flex; align-items:center; color: var(--red); }
 
-/* ── Panel styles ─────────────────────────────────────── */
-.overlay { position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.28); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:flex-end; }
-.form-panel { width:480px; max-width:94vw; height:100vh; background:#fff; display:flex; flex-direction:column; box-shadow:var(--shadow-xl); }
-.panel-header { display:flex; align-items:center; justify-content:space-between; padding:18px 20px 14px; border-bottom:1px solid var(--separator-2); flex-shrink:0; gap:12px; }
-.panel-eyebrow { font-size:0.68rem; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-quarternary); margin-bottom:2px; }
-.panel-title { font-size:1.05rem; font-weight:700; letter-spacing:-0.03em; color:var(--text-primary); }
-.panel-close { width:28px; height:28px; border-radius:var(--r-sm); display:flex; align-items:center; justify-content:center; color:var(--text-quarternary); transition: background var(--t-fast), color var(--t-fast); }
-.panel-close:hover { background:var(--surface-3); color:var(--text-primary); }
-.panel-body { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:18px; }
-.panel-footer { padding:16px 24px; border-top:1px solid var(--separator-2); display:flex; gap:10px; justify-content:flex-end; flex-shrink:0; }
-.field-hint { font-size:0.72rem; color:var(--text-quarternary); margin-top:-4px; }
-.overlay-enter-active,.overlay-leave-active { transition:opacity 180ms var(--ease); }
-.overlay-enter-from,.overlay-leave-to { opacity:0; }
-.panel-enter-active { transition:transform 240ms var(--ease-spring); }
-.panel-leave-active { transition:transform 180ms var(--ease); }
-.panel-enter-from,.panel-leave-to { transform:translateX(100%); }
+/* ── Panel overrides (shared.css provides base styles) ── */
+/* Width override — shared default is 520px; use 480px here */
+.form-panel { width: 480px; }
+
+/* panel-body uses panel-body-scroll name in shared.css;
+   replicate scroll + touch behaviour under local class name */
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Vue transition names used locally (shared.css uses overlay/form-panel combo) */
+.overlay-enter-active, .overlay-leave-active { transition: opacity 180ms var(--ease); }
+.overlay-enter-from, .overlay-leave-to { opacity: 0; }
+.panel-enter-active { transition: transform 240ms var(--ease-spring); }
+.panel-leave-active { transition: transform 180ms var(--ease); }
+.panel-enter-from, .panel-leave-to { transform: translateX(100%); }
+
 @media (max-width: 800px) {
-  .overlay { align-items: flex-end; justify-content: stretch; }
-  .form-panel { width: 100%; max-width: 100%; height: auto; max-height: 92vh; border-radius: 20px 20px 0 0; }
-  .panel-enter-from,.panel-leave-to { transform: translateY(100%); }
+  .form-panel { width: 100%; max-width: 100%; height: auto; max-height: 92vh; border-radius: var(--r-xl) var(--r-xl) 0 0; }
+  .panel-enter-from, .panel-leave-to { transform: translateY(100%); }
   .panel-enter-active { transition: transform 260ms var(--ease-spring); }
   .panel-leave-active { transition: transform 200ms var(--ease); }
 }

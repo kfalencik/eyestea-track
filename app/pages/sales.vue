@@ -116,15 +116,15 @@
     </div>
 
     <div v-else class="empty-state">
-      <div class="empty-icon">
+      <div class="empty-state-icon">
         <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
           <path d="M8 14h24l-2 18H10L8 14z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
           <path d="M14 14v-3a6 6 0 0112 0v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
           <path d="M16 22l3 3 6-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <p class="empty-title">No orders yet</p>
-      <p class="empty-sub">Create your first order to allocate duty-paid stock to a customer.</p>
+      <p class="empty-state-title">No orders yet</p>
+      <p class="empty-state-sub">Create your first order to allocate duty-paid stock to a customer.</p>
       <button class="btn-new" @click="openNew()">Create first order</button>
     </div>
 
