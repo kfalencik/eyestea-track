@@ -579,14 +579,14 @@ async function submitNewBatch() {
 }
 .toast {
   display: flex; align-items: center; gap: 12px;
-  padding: 14px 20px;
-  background: rgba(28,28,30,0.94);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  padding: 12px 18px;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
   border-radius: 99px;
-  border: 1px solid rgba(255,255,255,0.10);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.28), 0 2px 8px rgba(0,0,0,0.18);
-  color: rgba(255,255,255,0.92);
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+  color: var(--text-primary);
   font-size: 0.92rem;
   font-weight: 500;
   white-space: nowrap;
@@ -602,12 +602,12 @@ async function submitNewBatch() {
 .toast--error .toast-pip { background: var(--red); }
 .toast-msg { flex: 1; }
 .toast-close {
-  color: rgba(255,255,255,0.30);
+  color: var(--text-placeholder);
   display: flex; align-items: center;
   margin-left: 4px;
   transition: color var(--t-fast);
 }
-.toast-close:hover { color: rgba(255,255,255,0.80); }
+.toast-close:hover { color: var(--text-primary); }
 
 .toast-enter-active { transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-spring); }
 .toast-leave-active { transition: opacity 160ms var(--ease); }
@@ -779,7 +779,7 @@ async function submitNewBatch() {
 
 /* Toast tweaks on mobile */
 @media (max-width: 800px) {
-  .toasts { top: 12px; width: calc(100vw - 32px); left: 16px; right: 16px; transform: none; }
+  .toasts { top: calc(12px + env(safe-area-inset-top)); width: calc(100vw - 32px); left: 16px; right: 16px; transform: none; }
   .toast { white-space: normal; font-size: 0.84rem; }
 }
 
