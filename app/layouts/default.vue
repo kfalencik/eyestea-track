@@ -643,21 +643,10 @@ async function submitNewBatch() {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-top: 1px solid rgba(0,0,0,0.08);
-  padding: 8px 4px 0;
+  padding: 8px 4px env(safe-area-inset-bottom);
   gap: 0;
   transform: translateZ(0);
   will-change: transform;
-  /* Fill the home indicator area with the same background */
-  padding-bottom: env(safe-area-inset-bottom);
-}
-/* Extend the nav background behind the home indicator to kill the gap */
-.mobile-nav::after {
-  content: '';
-  position: absolute;
-  bottom: calc(-1 * env(safe-area-inset-bottom));
-  left: 0; right: 0;
-  height: env(safe-area-inset-bottom);
-  background: rgba(255,255,255,0.92);
 }
 @media (max-width: 800px) {
   .mobile-nav { display: flex; align-items: flex-start; justify-content: space-around; }
