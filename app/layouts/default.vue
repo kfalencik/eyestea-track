@@ -417,6 +417,7 @@ async function submitNewBatch() {
 .shell {
   display: flex;
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
 }
 
@@ -626,7 +627,9 @@ async function submitNewBatch() {
 @media (max-width: 800px) {
   .shell { flex-direction: column; }
   .sidebar { display: none; }
-  .content { padding: 16px 16px calc(72px + env(safe-area-inset-bottom)); }
+  .content {
+    padding: calc(16px + env(safe-area-inset-top)) 16px calc(80px + env(safe-area-inset-bottom));
+  }
   /* Bottom nav bar appears via .mobile-nav injected below */
 }
 
@@ -640,13 +643,24 @@ async function submitNewBatch() {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-top: 1px solid rgba(0,0,0,0.08);
-  padding: 8px 4px max(8px, env(safe-area-inset-bottom));
+  padding: 8px 4px 0;
   gap: 0;
   transform: translateZ(0);
   will-change: transform;
+  /* Fill the home indicator area with the same background */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+/* Extend the nav background behind the home indicator to kill the gap */
+.mobile-nav::after {
+  content: '';
+  position: absolute;
+  bottom: calc(-1 * env(safe-area-inset-bottom));
+  left: 0; right: 0;
+  height: env(safe-area-inset-bottom);
+  background: rgba(255,255,255,0.92);
 }
 @media (max-width: 800px) {
-  .mobile-nav { display: flex; align-items: flex-end; justify-content: space-around; }
+  .mobile-nav { display: flex; align-items: flex-start; justify-content: space-around; }
 }
 
 .mobile-nav-item {
