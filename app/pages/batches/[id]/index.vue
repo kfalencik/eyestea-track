@@ -531,7 +531,7 @@
                 <div class="ferment-actions">
                   <button type="button" class="btn-submit" @click="logPanelOpen = true">+ Log reading</button>
                   <button type="button" class="btn-add-ingredient" @click="fermentAddOpen = true">+ Add ingredient</button>
-                  <button type="button" class="btn-mark-complete" @click="saveStageClick(stage)">
+                  <button type="button" class="btn-mark-complete" @click="fermentCompleteDialogOpen = true">
                     <template v-if="saving === stage.key">Saving…</template>
                     <template v-else>Mark complete <svg width="11" height="11" viewBox="0 0 11 11" fill="none" style="vertical-align:-1px"><path d="M2 5.5h7M6 3l2.5 2.5L6 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></template>
                   </button>
@@ -1313,6 +1313,30 @@
             </div>
           </div>
         </Transition>
+      </div>
+    </Transition>
+  </Teleport>
+
+  <!-- Fermentation complete confirmation dialog -->
+  <Teleport to="body">
+    <Transition name="overlay">
+      <div v-if="fermentCompleteDialogOpen" class="overlay overlay--center" @click.self="fermentCompleteDialogOpen = false">
+        <div class="discard-dialog">
+          <div class="discard-dialog-icon">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <circle cx="14" cy="14" r="12" stroke="#FF9F0A" stroke-width="1.5"/>
+              <path d="M14 9v6M14 17.5v1" stroke="#FF9F0A" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="discard-dialog-title">Complete fermentation?</p>
+          <p class="discard-dialog-sub">This will mark fermentation as complete and advance the batch to transfer. Make sure the SG has been stable for at least 48 hours before proceeding.</p>
+          <div class="discard-dialog-actions">
+            <button class="btn-cancel" @click="fermentCompleteDialogOpen = false">Cancel</button>
+            <button class="btn-submit" :disabled="saving === 'ferment'" @click="confirmFermentComplete()">
+              {{ saving === 'ferment' ? 'Saving…' : 'Yes, complete fermentation' }}
+            </button>
+          </div>
+        </div>
       </div>
     </Transition>
   </Teleport>
@@ -2290,6 +2314,14 @@ function formatCorrectiveDate(ts: { toDate?: () => Date } | null | undefined): s
 }
 
 // ── Discard batch ─────────────────────────────────────────
+const fermentCompleteDialogOpen = ref(false)
+
+async function confirmFermentComplete() {
+  const fermentStage = STAGE_MAP.find(s => s.key === 'ferment')!
+  fermentCompleteDialogOpen.value = false
+  await saveStageClick(fermentStage)
+}
+
 const discardDialogOpen = ref(false)
 const discardReason = ref('')
 const discarding = ref(false)
