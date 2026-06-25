@@ -169,24 +169,25 @@ export const STAGE_MAP: StageDefinition[] = [
   { n: 2,  key: 'ingredients',  label: 'Ingredients check',       phase: 'brew' },
   { n: 3,  key: 'brew',         label: 'Brew the tea',            phase: 'brew' },
   { n: 4,  key: 'sweeten',      label: 'Dissolve sugar',          phase: 'brew' },
-  { n: 5,  key: 'cool',         label: 'Cool to pitch temp',      phase: 'brew' },
-  { n: 6,  key: 'pitch',        label: 'Pitch yeast',             phase: 'brew' },
+  { n: 5,  key: 'og',           label: 'Measure OG',              phase: 'brew' },
+  { n: 6,  key: 'cool',         label: 'Cool to pitch temp',      phase: 'brew' },
+  { n: 7,  key: 'pitch',        label: 'Pitch yeast',             phase: 'brew' },
   // ── Phase B: Fermentation ─────────────────────────────
-  { n: 7,  key: 'ferment',      label: 'Fermentation',            phase: 'ferment' },
+  { n: 8,  key: 'ferment',      label: 'Fermentation',            phase: 'ferment' },
   // ── Phase C: Secondary & conditioning ─────────────────
-  { n: 8,  key: 'secondary',    label: 'Transfer to secondary',   phase: 'condition' },
-  { n: 9,  key: 'condition',    label: 'Add conditioning',        phase: 'condition' },
-  { n: 10, key: 'arrest',       label: 'Confirm fermentation arrested', phase: 'condition' },
+  { n: 9,  key: 'secondary',    label: 'Transfer to secondary',   phase: 'condition' },
+  { n: 10, key: 'condition',    label: 'Add conditioning',        phase: 'condition' },
+  { n: 11, key: 'arrest',       label: 'Confirm fermentation arrested', phase: 'condition' },
   // ── Phase D: Canning day ─────────────────────────────
-  { n: 11, key: 'ccp1',         label: 'CCP1 — pH check',         phase: 'canning', ccp: 'CCP1' },
-  { n: 12, key: 'precan',       label: 'Pre-can quality check',   phase: 'canning' },
-  { n: 13, key: 'ccp3',         label: 'CCP3 — O₂ purge',         phase: 'canning', ccp: 'CCP3' },
-  { n: 14, key: 'canning',      label: 'Canning run',             phase: 'canning' },
-  { n: 15, key: 'ccp4',         label: 'CCP4 — Seam integrity',   phase: 'canning', ccp: 'CCP4' },
-  { n: 16, key: 'ccp2',         label: 'CCP2 — Pasteurisation',   phase: 'canning', ccp: 'CCP2' },
-  { n: 17, key: 'inspect',      label: 'Can inspection',          phase: 'canning' },
+  { n: 12, key: 'ccp1',         label: 'CCP1 — pH check',         phase: 'canning', ccp: 'CCP1' },
+  { n: 13, key: 'precan',       label: 'Pre-can quality check',   phase: 'canning' },
+  { n: 14, key: 'ccp3',         label: 'CCP3 — O₂ purge',         phase: 'canning', ccp: 'CCP3' },
+  { n: 15, key: 'canning',      label: 'Canning run',             phase: 'canning' },
+  { n: 16, key: 'ccp4',         label: 'CCP4 — Seam integrity',   phase: 'canning', ccp: 'CCP4' },
+  { n: 17, key: 'ccp2',         label: 'CCP2 — Pasteurisation',   phase: 'canning', ccp: 'CCP2' },
+  { n: 18, key: 'inspect',      label: 'Can inspection',          phase: 'canning' },
   // ── Phase E: Post-production ─────────────────────────
-  { n: 18, key: 'label',        label: 'Labelling & storage',     phase: 'post' },
+  { n: 19, key: 'label',        label: 'Labelling & storage',     phase: 'post' },
 ]
 
 export const PHASE_LABELS: Record<StagePhase, string> = {
@@ -215,14 +216,12 @@ export const DEFAULT_RECIPE: BatchRecipe = {
 
 // Equipment checklist for sanitise stage
 export const EQUIPMENT_CHECKLIST = [
-  'Brew kettle',
   'Fermenter vessel',
-  'Airlock & bung',
-  'Thermometer',
-  'Hydrometer / refractometer',
-  'Transfer hose & siphon',
+  'Airlock',
+  'Thermometer probe',
+  'Hydrometer',
   'Stirring spoon',
   'Measuring jugs',
-  'Scales',
-  'pH meter',
+  'Measuring spoons',
+  'Clean table surface',
 ]

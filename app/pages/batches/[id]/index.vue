@@ -25,9 +25,125 @@
     </div>
 
     <!-- Locked banner -->
-    <div v-if="batchLocked" class="alert-locked">
+    <div v-if="batchLocked" class="alert-locked" :class="{ 'alert-locked--disposed': batch.status === 'disposed' }">
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2.5" y="5.5" width="8" height="6" rx="1.2" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 5.5V4a2 2 0 014 0v1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-      <strong>{{ batch.status === 'disposed' ? 'Batch discarded' : 'Batch complete' }}</strong> — this record is read-only.
+      <span>
+        <strong>{{ batch.status === 'disposed' ? 'Batch discarded' : 'Batch complete' }}</strong> — this record is read-only.
+        <span v-if="batch.status === 'disposed' && (batch as any).disposedReason" class="disposed-reason">{{ (batch as any).disposedReason }}</span>
+      </span>
+    </div>
+
+    <!-- Completion summary -->
+    <div v-if="batch.stage > 0" class="completion-summary">
+      <button type="button" class="cs-header" :style="batchLocked ? 'cursor:default' : ''" @click="!batchLocked && (showSummary = !showSummary)">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="3" y="1.5" width="8" height="11" rx="1.3" stroke="currentColor" stroke-width="1.3"/><path d="M5 5h4M5 7.5h4M5 10h2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Batch record
+        <span style="flex:1" />
+        <svg v-if="!batchLocked" class="cs-chevron" :class="{ 'cs-chevron--open': showSummary }" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 5.5l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <template v-if="showSummary || batchLocked">
+
+      <!-- Key stats row -->
+      <div class="cs-stats">
+        <div class="cs-stat">
+          <div class="cs-stat-label">OG</div>
+          <div class="cs-stat-val">{{ ogDisplay }}</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat-label">FG</div>
+          <div class="cs-stat-val">{{ latestSG ?? '1.000' }}</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat-label">Est. ABV</div>
+          <div class="cs-stat-val">{{ estimatedAbv ?? '—' }}</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat-label">Cans filled</div>
+          <div class="cs-stat-val">{{ completionCansTotal }}</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat-label">Best before</div>
+          <div class="cs-stat-val">{{ batch.stageData?.label?.bestBefore ?? '—' }}</div>
+        </div>
+      </div>
+
+      <!-- Phase-by-phase notes -->
+      <div class="cs-phases">
+
+        <!-- Brew day -->
+        <div v-if="completionNotes.brew.length" class="cs-phase">
+          <div class="cs-phase-title">Brew day</div>
+          <div class="cs-rows">
+            <div v-for="row in completionNotes.brew" :key="row.label" class="cs-row">
+              <span class="cs-row-label">{{ row.label }}</span>
+              <span class="cs-row-val">{{ row.value }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fermentation -->
+        <div v-if="completionNotes.ferment.length" class="cs-phase">
+          <div class="cs-phase-title">Fermentation</div>
+          <div class="cs-rows">
+            <div v-for="row in completionNotes.ferment" :key="row.label" class="cs-row">
+              <span class="cs-row-label">{{ row.label }}</span>
+              <span class="cs-row-val">{{ row.value }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conditioning -->
+        <div v-if="completionNotes.condition.length" class="cs-phase">
+          <div class="cs-phase-title">Secondary & conditioning</div>
+          <div class="cs-rows">
+            <div v-for="row in completionNotes.condition" :key="row.label" class="cs-row">
+              <span class="cs-row-label">{{ row.label }}</span>
+              <span class="cs-row-val">{{ row.value }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Canning day -->
+        <div v-if="completionNotes.canning.length" class="cs-phase">
+          <div class="cs-phase-title">Canning day</div>
+          <div class="cs-rows">
+            <div v-for="row in completionNotes.canning" :key="row.label" class="cs-row">
+              <span class="cs-row-label">{{ row.label }}</span>
+              <span class="cs-row-val">{{ row.value }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Post-production -->
+        <div v-if="completionNotes.post.length" class="cs-phase">
+          <div class="cs-phase-title">Post-production</div>
+          <div class="cs-rows">
+            <div v-for="row in completionNotes.post" :key="row.label" class="cs-row">
+              <span class="cs-row-label">{{ row.label }}</span>
+              <span class="cs-row-val">{{ row.value }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Corrective actions -->
+        <div v-if="correctiveActions && correctiveActions.length" class="cs-phase cs-phase--ccp">
+          <div class="cs-phase-title">Corrective actions</div>
+          <div class="cs-rows">
+            <div v-for="ca in correctiveActions" :key="ca.id" class="cs-row cs-row--ca">
+              <span class="cs-row-label">{{ ca.ccp }}</span>
+              <span class="cs-row-val">
+                {{ ca.deviation }}
+                <span v-if="ca.actionTaken"> · {{ ca.actionTaken }}</span>
+                <span class="cs-ca-disposition" :class="`cs-ca--${ca.productDisposition}`">{{ ca.productDisposition }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      </template>
     </div>
 
     <!-- Hold alert -->
@@ -45,8 +161,8 @@
 
       <div class="stage-runner-col">
 
-        <!-- Phase groupings -->
-        <template v-for="phase in PHASES" :key="phase.key">
+        <!-- Phase groupings — hidden when batch is complete/disposed -->
+        <template v-if="!batchLocked" v-for="phase in PHASES" :key="phase.key">
           <div
             class="phase-group"
             :class="[
@@ -247,6 +363,11 @@
                       <input v-model.number="forms.brew.steepMinutes" type="number" class="field-input meas-input" step="1" min="5" max="120" />
                       <span class="meas-unit">min</span>
                     </div>
+                    <div class="recipe-ref-row">
+                      <span class="recipe-ref-label">Tea volume produced</span>
+                      <input v-model.number="forms.brew.brewVolumeL" type="number" class="field-input meas-input" step="0.5" min="0" max="200" />
+                      <span class="meas-unit">L</span>
+                    </div>
                   </div>
                   <div class="field" style="margin-top:12px">
                     <label class="field-label">Notes <span class="label-opt">(optional)</span></label>
@@ -292,7 +413,31 @@
                 </div>
               </template>
 
-              <!-- ── 5 · Cool to pitch temp ── -->
+              <!-- ── 5 · Measure OG ── -->
+              <template v-else-if="stage.key === 'og'">
+                <div class="panel-body">
+                  <p class="panel-lead">Take a hydrometer reading while the wort is still hot. This is your original gravity — it determines the final ABV.</p>
+                  <div class="recipe-ref">
+                    <div class="recipe-ref-row">
+                      <span class="recipe-ref-label">Original gravity (OG)</span>
+                      <input v-model.number="forms.og.ogRecorded" type="number" class="field-input meas-input" step="0.001" min="1.000" max="1.150" />
+                      <span class="meas-unit">SG</span>
+                    </div>
+                  </div>
+                  <div class="field" style="margin-top:12px">
+                    <label class="field-label">Notes <span class="label-opt">(optional)</span></label>
+                    <textarea v-model="forms.og.notes" class="field-input field-textarea" rows="2" placeholder="Sample temperature, any observations…" />
+                  </div>
+                  <div class="panel-actions">
+                    <button type="button" class="btn-submit" :disabled="saving === stage.key || !forms.og.ogRecorded" @click="saveStageClick(stage)">
+                      <template v-if="saving === stage.key">Saving…</template>
+                      <template v-else>OG recorded <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="vertical-align:-1px"><path d="M2 6l2.5 3L10 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></template>
+                    </button>
+                  </div>
+                </div>
+              </template>
+
+              <!-- ── 6 · Cool to pitch temp ── -->
               <template v-else-if="stage.key === 'cool'">
                 <div class="panel-body">
                   <div class="crit-limit">Do not pitch yeast above 25°C — heat kills it. Target 18–22°C.</div>
@@ -303,14 +448,9 @@
                       <span class="meas-unit">°C</span>
                     </div>
                     <div class="recipe-ref-row">
-                      <span class="recipe-ref-label">Time to cool</span>
-                      <input v-model.number="forms.cool.coolingMinutes" type="number" class="field-input meas-input" step="1" min="0" />
-                      <span class="meas-unit">min</span>
-                    </div>
-                    <div class="recipe-ref-row">
-                      <span class="recipe-ref-label">Cooling method</span>
-                      <input v-model="forms.cool.coolingMethod" type="text" class="field-input meas-input" placeholder="Immersion chiller" style="width:140px" />
-                      <span class="meas-unit" />
+                      <span class="recipe-ref-label">Cold water added</span>
+                      <input v-model.number="forms.cool.waterAddedL" type="number" class="field-input meas-input" step="0.5" min="0" max="200" />
+                      <span class="meas-unit">L</span>
                     </div>
                   </div>
                   <div v-if="forms.cool.finalTempC && forms.cool.finalTempC > 25" class="field-warn" style="margin-top:10px">
@@ -343,11 +483,6 @@
                       <span class="recipe-ref-label">Pitching temp</span>
                       <input v-model.number="forms.pitch.pitchTempC" type="number" class="field-input meas-input" step="0.5" min="10" max="35" />
                       <span class="meas-unit">°C</span>
-                    </div>
-                    <div class="recipe-ref-row">
-                      <span class="recipe-ref-label">Original gravity (OG)</span>
-                      <input v-model.number="forms.pitch.ogRecorded" type="number" class="field-input meas-input" step="0.001" min="1.000" max="1.150" />
-                      <span class="meas-unit">SG</span>
                     </div>
                     <div class="recipe-ref-row checklist-row">
                       <span class="recipe-ref-label">Yeast rehydrated?</span>
@@ -856,7 +991,7 @@
             </div>
             <div class="stat-item">
               <div class="stat-label">Target FG</div>
-              <div class="stat-val">1.008</div>
+              <div class="stat-val">1.000</div>
             </div>
           </div>
           <div class="stats-sep" />
@@ -866,12 +1001,12 @@
               <div class="stat-val">{{ estimatedAbv ?? '—' }}</div>
             </div>
             <div class="stat-item">
-              <div class="stat-label">Pitch °C</div>
-              <div class="stat-val">{{ pitchTempDisplay }}</div>
+              <div class="stat-label">Current ABV</div>
+              <div class="stat-val">{{ currentAbv ?? '—' }}</div>
             </div>
             <div class="stat-item">
-              <div class="stat-label">Day</div>
-              <div class="stat-val">{{ daysSincePitch }}</div>
+              <div class="stat-label">Total vol</div>
+              <div class="stat-val">{{ totalVolumeL != null ? `${totalVolumeL} L` : '—' }}</div>
             </div>
           </div>
         </div>
@@ -1367,10 +1502,11 @@ function sixMonthsFromNow() {
 const forms = reactive({
   sanitise:    { checked: [] as string[], notes: '' },
   ingredients: { notes: '' },
-  brew:        { brewTempC: 93 as number|null, steepMinutes: 20 as number|null, notes: '' },
+  brew:        { brewTempC: 93 as number|null, steepMinutes: 8 as number|null, brewVolumeL: null as number|null, notes: '' },
   sweeten:     { wortTempAfterSugarC: 80 as number|null, sugarDissolvedConfirmed: false, notes: '' },
-  cool:        { finalTempC: 20 as number|null, coolingMinutes: 45 as number|null, coolingMethod: '', notes: '' },
-  pitch:       { pitchTempC: 20 as number|null, ogRecorded: 1.048 as number|null, yeastHydrated: false, notes: '' },
+  og:          { ogRecorded: 1.030 as number|null, notes: '' },
+  cool:        { finalTempC: 20 as number|null, waterAddedL: null as number|null, notes: '' },
+  pitch:       { pitchTempC: 20 as number|null, yeastHydrated: false, notes: '' },
   ferment:     { notes: '' },
   secondary:   { volumeTransferredL: null as number|null, notes: '' },
   condition:   { notes: '' },
@@ -1410,8 +1546,28 @@ async function saveStageClick(stage: StageDefinition) {
 
     // OG/FG from pitch/canning flow up to batch recipe for stats
     const batchUpdates: Record<string, unknown> = {}
-    if (stage.key === 'pitch' && cleanData.ogRecorded) {
+    if (stage.key === 'og' && cleanData.ogRecorded) {
       batchUpdates['recipe.og'] = cleanData.ogRecorded
+      await addReading({
+        type: 'gravity',
+        value: cleanData.ogRecorded as number,
+        day: 0,
+        notes: 'OG',
+        userId: authStore.user!.uid,
+      })
+    }
+    // Save pitch temp as a day-0 temperature reading so fermentation log starts with initial temp
+    if (stage.key === 'pitch') {
+      const pitchTemp = batch.value?.stageData?.cool?.finalTempC
+      if (pitchTemp != null) {
+        await addReading({
+          type: 'temperature',
+          value: pitchTemp,
+          day: 0,
+          notes: 'Pitch temp',
+          userId: authStore.user!.uid,
+        })
+      }
     }
     // Store FG on ferment stageData so inventory/log can compute ABV without reading the subcollection
     if (stage.key === 'ferment') {
@@ -1547,7 +1703,7 @@ const latestSG = computed(() => {
 })
 
 const ogDisplay = computed(() => {
-  const og = batch.value?.stageData?.pitch?.ogRecorded
+  const og = batch.value?.stageData?.og?.ogRecorded ?? batch.value?.stageData?.pitch?.ogRecorded
   return og ? og.toFixed(3) : '—'
 })
 
@@ -1556,17 +1712,126 @@ const pitchTempDisplay = computed(() => {
   return t != null ? `${t}°C` : '—'
 })
 
+const totalVolumeL = computed(() => {
+  const brewVol = batch.value?.stageData?.brew?.brewVolumeL ?? forms.brew.brewVolumeL
+  const waterAdded = batch.value?.stageData?.cool?.waterAddedL ?? forms.cool.waterAddedL
+  if (brewVol == null) return null
+  return brewVol + (waterAdded ?? 0)
+})
+
 const estimatedAbv = computed(() => {
-  const og = batch.value?.stageData?.pitch?.ogRecorded
-  const fg = latestSG.value ? parseFloat(latestSG.value) : null
-  if (!og || !fg) return null
+  const og = batch.value?.stageData?.og?.ogRecorded ?? batch.value?.stageData?.pitch?.ogRecorded ?? forms.og.ogRecorded
+  if (!og) return null
+  const latestSgVal = latestSG.value ? parseFloat(latestSG.value) : null
+  const fg = latestSgVal !== null ? Math.min(latestSgVal, 1.000) : 1.000
   return ((og - fg) * 131.25).toFixed(1) + '%'
+})
+
+const currentAbv = computed(() => {
+  const og = batch.value?.stageData?.og?.ogRecorded ?? batch.value?.stageData?.pitch?.ogRecorded
+  const sg = latestSG.value ? parseFloat(latestSG.value) : null
+  if (!og || !sg) return null
+  return ((og - sg) * 131.25).toFixed(1) + '%'
 })
 
 const daysSincePitch = computed(() => {
   if (!batch.value?.startDate) return '—'
   const ms = Date.now() - batch.value.startDate.toDate().getTime()
   return Math.floor(ms / 86400000)
+})
+
+// ── Completion summary data ───────────────────────────────
+interface SummaryRow { label: string; value: string }
+
+const completionCansTotal = computed(() => {
+  const runs = batch.value?.stageData?.canning?.canRuns
+  if (!Array.isArray(runs)) return '—'
+  const good = (runs as CanRun[]).filter(r => !r.defect).reduce((s, r) => s + (r.qty ?? 0), 0)
+  return good ? String(good) : '—'
+})
+
+const completionNotes = computed(() => {
+  const sd = batch.value?.stageData
+  if (!sd) return { brew: [], ferment: [], condition: [], canning: [], post: [] }
+
+  const row = (label: string, value: string | number | null | undefined): SummaryRow | null =>
+    value != null && value !== '' ? { label, value: String(value) } : null
+
+  const brew: SummaryRow[] = [
+    row('Brew temp', sd.brew?.brewTempC != null ? `${sd.brew.brewTempC}°C` : null),
+    row('Steep time', sd.brew?.steepMinutes != null ? `${sd.brew.steepMinutes} min` : null),
+    row('Tea volume', sd.brew?.brewVolumeL != null ? `${sd.brew.brewVolumeL} L` : null),
+    row('Brew notes', sd.brew?.notes),
+    row('Sugar dissolved', sd.sweeten?.sugarDissolvedConfirmed ? 'Confirmed' : null),
+    row('Sweeten notes', sd.sweeten?.notes),
+    row('Cool to', sd.cool?.finalTempC != null ? `${sd.cool.finalTempC}°C` : null),
+    row('Cold water added', sd.cool?.waterAddedL != null ? `${sd.cool.waterAddedL} L` : null),
+    row('Cool notes', sd.cool?.notes),
+    row('Pitch temp', sd.pitch?.pitchTempC != null ? `${sd.pitch.pitchTempC}°C` : null),
+    row('OG', (sd.og?.ogRecorded ?? sd.pitch?.ogRecorded) != null ? Number(sd.og?.ogRecorded ?? sd.pitch?.ogRecorded).toFixed(3) : null),
+    row('Yeast hydrated', sd.pitch?.yeastHydrated ? 'Yes' : null),
+    row('Pitch notes', sd.pitch?.notes),
+    row('Ingredients notes', sd.ingredients?.notes),
+    row('Sanitise notes', sd.sanitise?.notes),
+  ].filter(Boolean) as SummaryRow[]
+
+  const readingCount = gravityReadings.value?.length ?? 0
+  const ferment: SummaryRow[] = [
+    row('SG readings', readingCount ? String(readingCount) : null),
+    row('Final SG', latestSG.value),
+    row('Ferment notes', sd.ferment?.notes),
+    row('Transfer notes', sd.secondary?.notes),
+  ].filter(Boolean) as SummaryRow[]
+
+  const cond = linkedProduct.value?.conditioning ?? []
+  const savedActuals = (sd.condition?.actuals ?? {}) as Record<string, number>
+  const condIngredients: SummaryRow[] = cond.map(ri => ({
+    label: ri.ingredientName,
+    value: `${savedActuals[ri.ingredientId] ?? ri.amountPerBatch} ${ri.unit}`,
+  }))
+  const condition: SummaryRow[] = [
+    ...condIngredients,
+    row('pH (CCP1)', sd.ccp1?.ph != null ? `${Number(sd.ccp1.ph).toFixed(2)} — ${sd.ccp1.phPass ? 'pass' : 'FAIL'}` : null),
+    row('Conditioning notes', sd.condition?.notes),
+    row('Arrest notes', sd.arrest?.notes),
+    row('Pre-can clarity', sd.precan?.precanClarity),
+    row('Pre-can carbonation', sd.precan?.precanCarbonation),
+    row('Pre-can taste', sd.precan?.precanTaste),
+    row('Pre-can notes', sd.precan?.notes),
+  ].filter(Boolean) as SummaryRow[]
+
+  const canRuns = Array.isArray(sd.canning?.canRuns) ? (sd.canning.canRuns as CanRun[]) : []
+  const goodCans = canRuns.filter(r => !r.defect).reduce((s, r) => s + (r.qty ?? 0), 0)
+  const defectCans = canRuns.filter(r => r.defect).reduce((s, r) => s + (r.qty ?? 0), 0)
+  const canSizes = [...new Set(canRuns.filter(r => !r.defect).map(r => `${r.sizeMl} ml`))].join(', ')
+  const canning: SummaryRow[] = [
+    row('Cans filled', goodCans ? `${goodCans}${defectCans ? ` (${defectCans} defect)` : ''}` : null),
+    row('Can sizes', canSizes || null),
+    row('Lot code', sd.canning?.lotCode),
+    row('Fill temp', sd.canning?.fillTempC != null ? `${sd.canning.fillTempC}°C` : null),
+    row('Seamer ref', sd.canning?.seamerRef),
+    row('Canning notes', sd.canning?.notes),
+    row('O₂ purge (CCP3)', sd.ccp3?.purgeConfirmed ? `Confirmed · ${sd.ccp3.gasType ?? ''}` : sd.ccp3 ? 'Not confirmed' : null),
+    row('CCP3 notes', sd.ccp3?.notes),
+    row('Seam visual (CCP4)', sd.ccp4?.seamVisualPass != null ? (sd.ccp4.seamVisualPass ? 'Pass' : 'FAIL') : null),
+    row('Leak test (CCP4)', sd.ccp4?.leakTestPass != null ? (sd.ccp4.leakTestPass ? 'Pass' : 'FAIL') : null),
+    row('Metal fragments (CCP4)', sd.ccp4?.metalFragmentsNone != null ? (sd.ccp4.metalFragmentsNone ? 'None found' : 'FOUND') : null),
+    row('CCP4 notes', sd.ccp4?.notes),
+    row('Pasteur. temp (CCP2)', sd.ccp2?.waterBathTempC != null ? `${sd.ccp2.waterBathTempC}°C` : null),
+    row('Pasteur. hold (CCP2)', sd.ccp2?.holdTimeMinutes != null ? `${sd.ccp2.holdTimeMinutes} min` : null),
+    row('CCP2 notes', sd.ccp2?.notes),
+    row('Cans inspected', sd.inspect?.cansInspected != null ? String(sd.inspect.cansInspected) : null),
+    row('Defects found', sd.inspect?.defectsFound != null ? String(sd.inspect.defectsFound) : null),
+    row('Inspection notes', sd.inspect?.notes),
+  ].filter(Boolean) as SummaryRow[]
+
+  const post: SummaryRow[] = [
+    row('Best before', sd.label?.bestBefore),
+    row('Label notes', sd.label?.notes),
+    row('Batch notes', batch.value?.notes),
+  ].filter(Boolean) as SummaryRow[]
+
+  return { brew, ferment, condition, canning, post }
 })
 
 const fermentStable = computed(() => {
@@ -1580,6 +1845,11 @@ const fermentStable = computed(() => {
 const batchLocked = computed(() =>
   batch.value?.status === 'complete' || batch.value?.status === 'disposed'
 )
+
+const showSummary = ref(false)
+watch(() => batch.value?.status, (s) => {
+  if (s === 'complete') showSummary.value = true
+}, { immediate: true })
 
 const statusLabel = computed(() => {
   const b = batch.value
@@ -1610,6 +1880,7 @@ function stageSummary(stage: StageDefinition): string | null {
   if (stage.key === 'ingredients') return d.notes ? `Confirmed · ${d.notes}` : 'Ingredients confirmed'
   if (stage.key === 'brew') return [d.brewTempC && `${d.brewTempC}°C`, d.steepMinutes && `${d.steepMinutes} min`].filter(Boolean).join(' · ') || 'Brewed'
   if (stage.key === 'sweeten') return 'Sugar dissolved'
+  if (stage.key === 'og') return d.ogRecorded ? `OG ${Number(d.ogRecorded).toFixed(3)}` : 'Recorded'
   if (stage.key === 'cool') return d.finalTempC ? `${d.finalTempC}°C` : 'Cooled'
   if (stage.key === 'pitch') return [d.pitchTempC && `${d.pitchTempC}°C`, d.ogRecorded && `OG ${Number(d.ogRecorded).toFixed(3)}`].filter(Boolean).join(' · ') || 'Pitched'
   if (stage.key === 'ferment') {
@@ -1650,12 +1921,14 @@ function phaseSummary(phase: StagePhase): PhaseStat[] {
 
   if (phase === 'brew') {
     const stats: PhaseStat[] = []
-    const brew = sd.brew; const pitch = sd.pitch; const cool = sd.cool
+    const brew = sd.brew; const pitch = sd.pitch; const cool = sd.cool; const og = sd.og
     if (brew?.brewTempC) stats.push({ label: 'Brew temp', value: `${brew.brewTempC}°C` })
     if (brew?.steepMinutes) stats.push({ label: 'Steep', value: `${brew.steepMinutes} min` })
+    if (brew?.brewVolumeL) stats.push({ label: 'Tea vol', value: `${brew.brewVolumeL} L` })
+    const ogVal = og?.ogRecorded ?? pitch?.ogRecorded
+    if (ogVal) stats.push({ label: 'OG', value: Number(ogVal).toFixed(3) })
     if (cool?.finalTempC) stats.push({ label: 'Cool to', value: `${cool.finalTempC}°C` })
     if (pitch?.pitchTempC) stats.push({ label: 'Pitch temp', value: `${pitch.pitchTempC}°C` })
-    if (pitch?.ogRecorded) stats.push({ label: 'OG', value: Number(pitch.ogRecorded).toFixed(3) })
     if (pitch?.yeastHydrated) stats.push({ label: 'Yeast', value: 'Hydrated' })
     return stats
   }
@@ -1665,7 +1938,7 @@ function phaseSummary(phase: StagePhase): PhaseStat[] {
     const count = gravityReadings.value?.length ?? 0
     const last = gravityReadings.value?.[count - 1]
     const first = gravityReadings.value?.[0]
-    const og = sd.pitch?.ogRecorded ? Number(sd.pitch.ogRecorded) : first?.value
+    const og = (sd.og?.ogRecorded ?? sd.pitch?.ogRecorded) ? Number(sd.og?.ogRecorded ?? sd.pitch?.ogRecorded) : first?.value
     if (count) stats.push({ label: 'SG readings', value: String(count) })
     if (last && count > 1) stats.push({ label: 'FG', value: last.value.toFixed(3) })
     if (og && last && count > 1) {
@@ -1730,28 +2003,28 @@ const STAGE_HELP: Record<string, StageHelp> = {
   sanitise: {
     n: 1, title: 'Sanitise equipment',
     what: [
-      'Use food-grade sanitiser (e.g. Star San, VWP) at the correct dilution.',
-      'Sanitise everything that will touch the wort — no rinse required for no-rinse sanitisers.',
-      'Let equipment drain but do not towel-dry (re-contaminates surfaces).',
+      'Clean and sanitise the table surface first, then all equipment.',
+      'Use food-grade sanitiser at the correct dilution — no rinse required for no-rinse products.',
+      'Let equipment drain; do not towel-dry as this re-contaminates surfaces.',
     ],
     check: [
-      'Kettle, fermenter, airlock, thermometer, hoses, jug, spoon, hydrometer.',
-      'No visible residue from previous batches.',
+      'Fermenter vessel, airlock, thermometer probe, hydrometer, stirring spoon, measuring jugs, measuring spoons.',
+      'No visible residue or scale from previous batches.',
       'Sanitiser concentration correct — check the label.',
     ],
-    next: 'While equipment is draining, weigh out your ingredients.',
+    next: 'While equipment is draining, measure out your ingredients.',
   },
   ingredients: {
     n: 2, title: 'Ingredients check',
     what: [
-      'Weigh out tea leaves, sugar, yeast, and nutrients.',
+      'Measure out tea leaves, sugar, yeast, and nutrients.',
       'Check all ingredients are within their use-by date.',
-      'Note supplier and lot numbers for HACCP traceability.',
+      'Note any lot numbers or quality concerns in the notes field.',
     ],
     check: [
       'Tea leaves: correct grade, no off-odours, packaging intact.',
       'Sugar: white granulated, no clumping or contamination.',
-      'Yeast: within use-by, was refrigerated — allow to reach room temp before pitching.',
+      'Yeast: within use-by, stored correctly — allow to reach room temp before pitching.',
     ],
     next: 'Heat brew water to 90–95°C. Add tea leaves as soon as temperature is reached.',
   },
@@ -1759,39 +2032,53 @@ const STAGE_HELP: Record<string, StageHelp> = {
     n: 3, title: 'Brew the tea',
     what: [
       'Heat brew water to 90–95°C.',
-      'Add weighed tea leaves and steep for 15–30 minutes.',
+      'Add measured tea leaves and steep for 8 minutes.',
       'Remove leaves without squeezing — squeezing extracts harsh tannins.',
     ],
     check: [
-      'Temperature confirmed with thermometer before steeping.',
+      'Temperature confirmed with the probe before steeping.',
       'Steep time measured from when leaves were added.',
       'Liquid is deep amber with a clean tea aroma.',
     ],
-    next: 'Add sugar while tea is still hot — above 70°C it dissolves almost instantly.',
+    next: 'Add sugar while the tea is still hot — above 70°C it dissolves almost instantly.',
   },
   sweeten: {
     n: 4, title: 'Dissolve sugar',
     what: [
-      'Add all the sugar to the hot tea wort.',
+      'Add all the sugar to the hot tea.',
       'Stir continuously until no crystals remain.',
-      'Rub a small sample between your fingers to confirm full dissolution.',
+      'Confirm full dissolution before moving on.',
     ],
     check: [
-      'No visible sugar crystals in the wort.',
+      'No visible sugar crystals remaining.',
       'No caramelisation — liquid should stay amber, not darken.',
     ],
-    next: 'Start cooling immediately. Getting from 90°C to 20°C takes time — plan for 30–60 min with an immersion chiller.',
+    next: 'Start cooling immediately. Allow 30–60 minutes to reach pitch temperature.',
     critical: 'Do not pitch yeast into wort above 25°C — heat kills it.',
   },
-  cool: {
-    n: 5, title: 'Cool to pitch temp',
+  og: {
+    n: 5, title: 'Measure OG',
     what: [
-      'Cool the wort to 18–22°C before pitching.',
-      'Use an immersion chiller, ice bath, or leave to cool in a clean environment.',
-      'Stir gently to speed cooling and equalise temperature.',
+      'Take a hydrometer reading from the hot wort before cooling.',
+      'Float the hydrometer in a sample tube — ensure it is not touching the sides.',
+      'Read at the bottom of the meniscus. Record to 3 decimal places.',
     ],
     check: [
-      'Temperature confirmed with a sanitised thermometer — not estimated.',
+      'Hydrometer sanitised before use.',
+      'Reading taken while wort is well mixed — stir gently first.',
+      'OG typically around 1.030 for this recipe.',
+    ],
+    next: 'Start cooling immediately after recording OG.',
+  },
+  cool: {
+    n: 6, title: 'Cool to pitch temp',
+    what: [
+      'Cool the wort to 18–22°C before pitching.',
+      'Place the vessel in an ice bath or cool water to speed the process.',
+      'Stir occasionally to equalise temperature throughout.',
+    ],
+    check: [
+      'Temperature confirmed with the sanitised probe — not estimated.',
       'Fermenter and all contact surfaces sanitised during the cooling window.',
     ],
     next: 'Rehydrate dry yeast in 30–35°C water for 15 minutes while the wort cools. Have nutrients ready.',
@@ -1800,14 +2087,13 @@ const STAGE_HELP: Record<string, StageHelp> = {
   pitch: {
     n: 6, title: 'Pitch yeast',
     what: [
-      'Rehydrate dry yeast: sprinkle on 30–35°C water, wait 15 min — do not stir.',
-      'Add yeast nutrients to the wort.',
+      'Rehydrate dry yeast: sprinkle onto 30–35°C water, wait 15 min — do not stir.',
+      'Add yeast nutrients to the wort and stir gently.',
       'Pitch the rehydrated yeast into the fermenter.',
-      'Fit the airlock immediately and fill with sanitiser solution.',
+      'Fit the airlock immediately.',
     ],
     check: [
       'Wort temperature confirmed within 18–22°C before pitching.',
-      'Yeast rehydrated — not pitched dry.',
       'OG recorded before sealing the fermenter.',
       'Airlock fitted and filled.',
     ],
@@ -1818,12 +2104,12 @@ const STAGE_HELP: Record<string, StageHelp> = {
     what: [
       'Log SG readings every 1–2 days.',
       'Note airlock activity, clarity, and any aromas.',
-      'Keep fermenter in a stable temperature environment (18–22°C).',
+      'Keep the fermenter in a stable environment at 18–22°C.',
     ],
     check: [
-      'SG dropping steadily — flat readings early can mean a slow start.',
+      'SG dropping steadily — flat readings early on can indicate a slow start.',
       'No strong off-odours (sulphur, acetone, vinegar).',
-      'Fermentation complete when SG is stable over two readings ≥48 h apart.',
+      'Fermentation is complete when SG is stable across two readings ≥48 h apart.',
     ],
     next: 'Once stable, transfer to secondary and add conditioning ingredients.',
     critical: 'Do not proceed to secondary until SG is stable — premature transfer risks over-carbonation in the can.',
@@ -1832,43 +2118,43 @@ const STAGE_HELP: Record<string, StageHelp> = {
     n: 8, title: 'Transfer to secondary',
     what: [
       'Sanitise the secondary vessel before transfer.',
-      'Siphon from the primary — leave the yeast cake behind.',
-      'Fit airlock to the secondary vessel.',
+      'Transfer carefully — leave the yeast cake behind.',
+      'Fit the airlock to the secondary vessel.',
     ],
     check: [
       'SG confirmed stable before transfer.',
-      'No yeast cake transferred — siphon from mid-vessel.',
-      'Secondary vessel visually clean with no previous batch residue.',
+      'Minimal yeast carried over.',
+      'Secondary vessel clean with no residue from previous batches.',
     ],
-    next: 'Add conditioning ingredients in the next stage. Have everything weighed and ready.',
+    next: 'Add conditioning ingredients in the next stage. Have everything measured and ready.',
   },
   condition: {
     n: 9, title: 'Add conditioning',
     what: [
-      'Add stevia, extra tea leaves, lemon essence, secondary flavour, and citric acid.',
-      'Stir gently to incorporate. Do not splash.',
+      'Add any conditioning ingredients per the product recipe.',
+      'Stir gently to incorporate — do not splash.',
       'Seal the vessel and leave to rest for 24–48 hours.',
     ],
     check: [
-      'All additions weighed and recorded accurately.',
+      'All additions measured and recorded accurately.',
       'Vessel sealed after additions.',
       'pH will be checked at CCP1 before canning.',
     ],
-    next: 'After conditioning rest (24–48 h), confirm fermentation has arrested, then measure pH at CCP1.',
+    next: 'After the conditioning rest (24–48 h), confirm fermentation has arrested, then measure pH at CCP1.',
   },
   arrest: {
     n: 10, title: 'Confirm arrest',
     what: [
       'Take a final gravity reading.',
-      'Compare to the previous reading — no change confirms arrest.',
+      'Compare to the previous reading — no change confirms fermentation has stopped.',
     ],
     check: [
-      'SG unchanged from previous reading (≥24 h apart).',
+      'SG unchanged from the previous reading (taken ≥24 h apart).',
       'No visible airlock activity.',
-      'Clean aroma — no active yeast character.',
+      'Clean aroma — no active fermentation character.',
     ],
-    next: 'Measure pH at CCP1 — the critical check before any product enters a can.',
-    critical: 'Do not can if fermentation is still active — this is a safety risk.',
+    next: 'Measure pH at CCP1 — the critical check before any product is canned.',
+    critical: 'Do not can if fermentation is still active — this is a food safety risk.',
   },
   ccp1: {
     n: 11, title: 'CCP1 — pH check',
@@ -1881,33 +2167,33 @@ const STAGE_HELP: Record<string, StageHelp> = {
       'Meter calibrated — check buffer expiry.',
       'pH ≤ 4.6 to pass the critical limit.',
     ],
-    next: 'If pH passes, carry out the pre-can quality check. If it fails, raise a corrective action immediately.',
-    critical: 'pH > 4.6 is a critical limit breach. Product must not be canned until corrective action is completed and pH re-tested.',
+    next: 'If pH passes, proceed to the pre-can quality check. If it fails, raise a corrective action immediately.',
+    critical: 'pH > 4.6 is a critical limit breach. Product must not be canned until a corrective action is completed and pH re-tested.',
   },
   precan: {
     n: 12, title: 'Pre-can quality check',
     what: [
       'Draw a sample and assess clarity, carbonation, and taste.',
-      'Re-check pH if more than 24 hours since CCP1.',
+      'Re-check pH if more than 24 hours have passed since CCP1.',
     ],
     check: [
-      'No off-flavours: excess acidity, acetone, sulphur.',
-      'Carbonation appropriate for the product spec.',
+      'No off-flavours: excess acidity, acetone, or sulphur.',
+      'Carbonation appropriate for the product.',
       'Colour and aroma consistent with previous batches.',
     ],
-    next: 'Prepare the canning line — have the seamer set up, gas supply connected, and cans ready.',
+    next: 'Set up the canning line — seamer ready, gas connected, cans staged.',
   },
   canning: {
     n: 13, title: 'Canning run',
     what: [
       'Fill and seam cans at the correct fill temperature.',
-      'Record cans produced, lot code, and fill temperature.',
+      'Record the number of cans, lot code, and fill temperature.',
       'The lot code must be unique and traceable to this batch.',
     ],
     check: [
       'Fill level consistent — not under or over filled.',
       'Lot code applied correctly to all cans.',
-      'Seamer settings unchanged from last verified run.',
+      'Seamer settings verified before starting.',
     ],
     next: 'Immediately after filling: confirm O₂ purge (CCP3) and seam integrity (CCP4).',
   },
@@ -1916,75 +2202,75 @@ const STAGE_HELP: Record<string, StageHelp> = {
     what: [
       'Apply food-grade CO₂ or N₂ purge to every can before filling.',
       'Record the gas certificate reference number.',
-      'Measure dissolved oxygen on a filled sample if equipment available.',
+      'Measure dissolved oxygen on a filled sample if equipment is available.',
     ],
     check: [
       'Gas certificate is current and food-grade rated.',
-      'Purge applied before every can — no exceptions.',
+      'Purge applied to every can — no exceptions.',
       'DO ≤ 0.3 mg/L if measured.',
     ],
-    next: 'Check seam integrity on filled cans (CCP4). Do not allow cans to sit.',
-    critical: 'If purge is not applied to any can, those cans must be disposed of. Raise a corrective action.',
+    next: 'Check seam integrity on filled cans (CCP4).',
+    critical: 'If purge was not applied to any can, those cans must be disposed of. Raise a corrective action.',
   },
   ccp4: {
     n: 15, title: 'CCP4 — Seam integrity',
     what: [
-      'Visual inspection of all seams — look for crimping defects, damage, or misalignment.',
-      'Conduct teardown on the required number of cans.',
-      'Submerge a sample in water for 30 seconds — observe for bubbles.',
+      'Visually inspect all seams — look for crimping defects, damage, or misalignment.',
+      'Conduct a teardown on the required number of cans.',
+      'Submerge a sample in water for 30 seconds and observe for bubbles.',
     ],
     check: [
       'Visual: no damaged, crushed, or misaligned seams.',
       'Teardown: seam dimensions within tolerance.',
-      'Leak test: no bubbles from any can.',
-      'No metal fragments in sample cans.',
+      'Leak test: no bubbles observed.',
+      'No metal fragments found in sample cans.',
     ],
-    next: 'Proceed to pasteurisation (CCP2) immediately after seaming.',
-    critical: 'Any leak, seam failure, or metal fragment means a full batch hold and investigation.',
+    next: 'Proceed to pasteurisation (CCP2) immediately.',
+    critical: 'Any leak, seam failure, or metal fragment requires a full batch hold and investigation.',
   },
   ccp2: {
     n: 16, title: 'CCP2 — Pasteurisation',
     what: [
       'Submerge sealed cans fully in a water bath.',
-      'Bring bath to temperature and hold for the full time.',
-      'Record temperature at start, 5 min, and end.',
+      'Bring the bath to temperature and hold for the full duration.',
+      'Monitor and record temperature throughout.',
     ],
     check: [
-      'Water bath ≥ 75°C at all three time points.',
+      'Water bath ≥ 75°C maintained throughout.',
       'Hold time ≥ 10 minutes from when target temp was first reached.',
       'All cans fully submerged throughout.',
     ],
-    next: 'Cool cans and carry out can inspection. Apply labels once cooled.',
-    critical: 'If temperature drops below 75°C or hold time falls short, raise a corrective action before releasing any product.',
+    next: 'Cool cans then carry out can inspection. Apply labels once fully cooled.',
+    critical: 'If temperature drops below 75°C or hold time is short, raise a corrective action before releasing any product.',
   },
   inspect: {
     n: 17, title: 'Can inspection',
     what: [
       'Inspect all cans after pasteurisation.',
       'Check ends for swelling — swelling indicates spoilage or over-carbonation.',
-      'Check seams and bodies for moisture (leakers).',
-      'Remove and quarantine any defective cans.',
+      'Check seams and bodies for moisture indicating leakers.',
+      'Quarantine any defective cans immediately.',
     ],
     check: [
-      'No swollen cans.',
+      'No swollen ends.',
       'No leakers.',
-      'Labels undamaged if pre-labelled.',
+      'Seams undamaged after pasteurisation.',
     ],
-    next: 'Apply final labels. Record storage location and best-before date.',
+    next: 'Apply final labels. Record the storage location and best-before date.',
   },
   label: {
     n: 18, title: 'Labelling & storage',
     what: [
-      'Apply labels with correct lot code, best-before date, and allergen information.',
-      'Move to cold storage (2–8°C) as soon as possible.',
-      'Record storage location for traceability.',
+      'Apply labels with the correct lot code, best-before date, and product information.',
+      'Move to storage as soon as possible.',
+      'Record the storage location for traceability.',
     ],
     check: [
       'Lot code matches the canning run record.',
       'Best-before date calculated correctly.',
       'Labels legible, correctly oriented, and fully adhered.',
     ],
-    next: 'HACCP log complete. Batch moves to the production archive.',
+    next: 'HACCP record complete. Batch is archived.',
   },
 }
 
@@ -2848,6 +3134,110 @@ function formatStageDate(key: string): string {
 }
 .btn-discard-confirm:hover:not(:disabled) { box-shadow: 0 3px 10px rgba(229,57,53,0.35); }
 .btn-discard-confirm:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ── Completion summary ──────────────────────────────── */
+.completion-summary {
+  border: 1px solid var(--separator-2);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.cs-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 16px;
+  width: 100%;
+  cursor: pointer;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--separator-2);
+}
+.cs-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-bottom: 1px solid var(--separator-2);
+}
+.cs-stat {
+  flex: 1 1 120px;
+  padding: 12px 16px;
+  border-right: 1px solid var(--separator-2);
+}
+.cs-stat:last-child { border-right: none; }
+.cs-chevron { color: var(--text-tertiary); transition: transform var(--t-fast); flex-shrink: 0; }
+.cs-chevron--open { transform: rotate(180deg); }
+.cs-stat-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 3px;
+}
+.cs-stat-val {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.cs-phases {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0;
+}
+.cs-phase {
+  padding: 14px 16px;
+  border-right: 1px solid var(--separator-2);
+  border-bottom: 1px solid var(--separator-2);
+}
+.cs-phase:last-child { border-right: none; }
+.cs-phase--ccp { grid-column: 1 / -1; background: var(--surface-2); }
+.cs-phase-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+.cs-rows { display: flex; flex-direction: column; gap: 5px; }
+.cs-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+.cs-row-label {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  min-width: 100px;
+}
+.cs-row-val {
+  color: var(--text-primary);
+  font-weight: 500;
+  flex: 1;
+}
+.cs-row--ca .cs-row-val { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.cs-ca-disposition {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  color: var(--text-secondary);
+}
+.cs-ca--released { background: rgba(48,168,90,0.12); color: var(--accent-deep); }
+.cs-ca--disposed { background: rgba(229,57,53,0.1); color: #C62828; }
+.cs-ca--hold { background: rgba(255,152,0,0.12); color: #E65100; }
+.cs-ca--re-pasteurised { background: rgba(33,150,243,0.1); color: #1565C0; }
 
 /* ── Responsive ─────────────────────────────────────── */
 @media (max-width: 800px) {

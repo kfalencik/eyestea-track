@@ -328,8 +328,20 @@ select.field-input {
   color: var(--text-secondary);
   margin-bottom: 24px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
+}
+.alert-locked--disposed {
+  background: rgba(229,57,53,0.06);
+  border-color: rgba(229,57,53,0.2);
+  color: #C62828;
+}
+.alert-locked--disposed svg { margin-top: 1px; flex-shrink: 0; }
+.disposed-reason {
+  display: block;
+  margin-top: 4px;
+  font-style: italic;
+  opacity: 0.85;
 }
 .hold-alert {
   background: var(--amber-tint);
